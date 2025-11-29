@@ -33,11 +33,11 @@ This milestone focuses on building the data structure for the application.
       [x] status (`enum(['completed', 'failed'])`).
       [x] type (`enum(['transfer', 'deposit'])`).
       [x] reference_id (`uuid`, unique).
-  [ ] 2.3 Create Models & Relationships:
-    [ ] Create `Transaction` model: `php artisan make:model Transaction`.
-    [ ] Define `User` -> `Transaction` relationships (sent/received).
-    [ ] Define `Transaction` -> `User` relationships (sender/receiver).
-    [ ] Set `fillable` properties and `casts` for decimal, enum, and uuid columns in both models.
+  [x] 2.3 Create Models & Relationships:
+    [x] Create `Transaction` model: `php artisan make:model Transaction`.
+    [x] Define `User` -> `Transaction` relationships (sent/received).
+    [x] Define `Transaction` -> `User` relationships (sender/receiver).
+    [x] Set `fillable` properties and `casts` for decimal, enum, and uuid columns in both models.
   [ ] 2.4 Create Database Seeders:
     [ ] Create a seeder to add the central commission account (e.g., `commission@wallet.app`).
     [ ] Add 2-3 sample users with initial balances for testing.
