@@ -23,16 +23,16 @@ This milestone focuses on building the data structure for the application.
 
   [x] 2.1 Modify `users` Table Migration:
     [x] In the existing `create_users_table` migration, add a `balance` column: `$table->decimal('balance', 15, 4)->default(0);`.
-  [ ] 2.2 Create `transactions` Table Migration:
-    [ ] Generate migration: `php artisan make:migration create_transactions_table`.
-    [ ] Add columns:
-      sender_id (foreign key to `users`).
-      receiver_id (foreign key to `users`).
-      amount (`decimal(15, 4)`).
-      commission_fee (`decimal(15, 4)`).
-      status (`enum(['completed', 'failed'])`).
-      type (`enum(['transfer', 'deposit'])`).
-      reference_id (`uuid`, unique).
+  [x] 2.2 Create `transactions` Table Migration:
+    [x] Generate migration: `php artisan make:migration create_transactions_table`.
+    [x] Add columns:
+      [x] sender_id (foreign key to `users`).
+      [x] receiver_id (foreign key to `users`).
+      [x] amount (`decimal(15, 4)`).
+      [x] commission_fee (`decimal(15, 4)`).
+      [x] status (`enum(['completed', 'failed'])`).
+      [x] type (`enum(['transfer', 'deposit'])`).
+      [x] reference_id (`uuid`, unique).
   [ ] 2.3 Create Models & Relationships:
     [ ] Create `Transaction` model: `php artisan make:model Transaction`.
     [ ] Define `User` -> `Transaction` relationships (sent/received).
