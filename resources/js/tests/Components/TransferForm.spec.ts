@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils';
 import TransferForm from '@/Components/TransferForm.vue';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { reactive } from 'vue';
 
 // A reactive object to simulate the form state from useForm.
@@ -17,15 +17,12 @@ const mockFormState = reactive({
 
 // Mock the useForm() composable from Inertia.js
 vi.mock('@inertiajs/vue3', async (importOriginal) => {
-    const original: any = await importOriginal();
+    const original = await importOriginal<typeof import('@inertiajs/vue3')>();
     return {
         ...original,
         useForm: () => mockFormState,
     };
 });
-
-// Mock the global route() helper
-vi.stubGlobal('route', (name: string) => `http://localhost/${name}`);
 
 describe('TransferForm.vue', () => {
     // Reset the mock state before each test

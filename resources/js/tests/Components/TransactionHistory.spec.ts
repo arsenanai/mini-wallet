@@ -1,7 +1,8 @@
-import { mount } from '@vue/test-utils';
 import TransactionHistory from '@/Components/TransactionHistory.vue';
-import { describe, it, expect, vi } from 'vitest';
+import { i18n } from '@/i18n';
 import { Paginated, Transaction, User } from '@/types';
+import { config, mount } from '@vue/test-utils';
+import { describe, expect, it, vi } from 'vitest';
 
 const currentUser: User = {
     id: 1,
@@ -23,6 +24,7 @@ const mockTransactionsTemplate: Paginated<Transaction> = {
         from: 1,
         last_page: 1,
         path: '',
+        links: [],
         per_page: 15,
         to: 1,
         total: 1,
@@ -31,7 +33,7 @@ const mockTransactionsTemplate: Paginated<Transaction> = {
 
 // Mock the usePage() composable from Inertia.js
 vi.mock('@inertiajs/vue3', async (importOriginal) => {
-    const original: any = await importOriginal();
+    const original = await importOriginal<typeof import('@inertiajs/vue3')>();
     return {
         ...original,
         usePage: () => ({
@@ -42,9 +44,16 @@ vi.mock('@inertiajs/vue3', async (importOriginal) => {
     };
 });
 
+// We still need to spy on the composable-based `t` function for this component
+vi.spyOn(i18n.global, 't').mockImplementation(
+    config.global.mocks.$t as (key: string | number) => string,
+);
+
 describe('TransactionHistory.vue', () => {
     it('correctly formats a date string into a readable format', () => {
-        const transactions = JSON.parse(JSON.stringify(mockTransactionsTemplate));
+        const transactions = JSON.parse(
+            JSON.stringify(mockTransactionsTemplate),
+        );
         transactions.data.push({
             id: 1,
             reference_id: 'test-ref',
@@ -75,7 +84,9 @@ describe('TransactionHistory.vue', () => {
     });
 
     it('correctly renders an outgoing transaction', () => {
-        const transactions = JSON.parse(JSON.stringify(mockTransactionsTemplate));
+        const transactions = JSON.parse(
+            JSON.stringify(mockTransactionsTemplate),
+        );
         transactions.data.push({
             id: 1,
             reference_id: 'test-ref-outgoing',
@@ -98,7 +109,9 @@ describe('TransactionHistory.vue', () => {
     });
 
     it('correctly renders an incoming transaction', () => {
-        const transactions = JSON.parse(JSON.stringify(mockTransactionsTemplate));
+        const transactions = JSON.parse(
+            JSON.stringify(mockTransactionsTemplate),
+        );
         transactions.data.push({
             id: 1,
             reference_id: 'test-ref-incoming',

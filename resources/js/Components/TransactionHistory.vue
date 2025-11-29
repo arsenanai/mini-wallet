@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
 import { Paginated, Transaction, User } from '@/types';
 import {
     ArrowDownCircleIcon,
     ArrowUpCircleIcon,
     XCircleIcon,
 } from '@heroicons/vue/24/solid';
+import { usePage } from '@inertiajs/vue3';
 
-const props = defineProps<{
+defineProps<{
     transactions: Paginated<Transaction>;
 }>();
-
 const currentUser = usePage().props.auth.user as User;
 
 const formatCurrency = (amount: number) => {
@@ -39,7 +37,9 @@ const transactionDetails = (transaction: Transaction) => {
         return {
             icon: isCompleted ? ArrowUpCircleIcon : XCircleIcon,
             iconClass: isCompleted ? 'text-red-500' : 'text-gray-500',
-            title: `Sent to ${transaction.receiver.name}`,
+            title: i18n.global.t('dashboard.sent_to', {
+                name: transaction.receiver.name,
+            }),
             amount: `-${formatCurrency(
                 transaction.amount + transaction.commission_fee,
             )}`,
@@ -49,7 +49,9 @@ const transactionDetails = (transaction: Transaction) => {
         return {
             icon: isCompleted ? ArrowDownCircleIcon : XCircleIcon,
             iconClass: isCompleted ? 'text-green-500' : 'text-gray-500',
-            title: `Received from ${transaction.sender.name}`,
+            title: i18n.global.t('dashboard.received_from', {
+                name: transaction.sender.name,
+            }),
             amount: `+${formatCurrency(transaction.amount)}`,
             amountClass: 'text-green-600',
         };
@@ -57,15 +59,21 @@ const transactionDetails = (transaction: Transaction) => {
 };
 </script>
 
+<script lang="ts">
+import { i18n } from '@/i18n';
+</script>
+
 <template>
     <div class="space-y-4">
-        <h3 class="text-lg font-medium text-gray-900">Transaction History</h3>
+        <h3 class="text-lg font-medium text-gray-900">
+            {{ $t('dashboard.transaction_history') }}
+        </h3>
         <div class="space-y-3">
             <div
                 v-if="transactions.data.length === 0"
                 class="rounded-md bg-gray-50 p-4 text-center text-sm text-gray-500"
             >
-                No transactions yet.
+                {{ $t('dashboard.no_transactions') }}
             </div>
             <div
                 v-for="transaction in transactions.data"

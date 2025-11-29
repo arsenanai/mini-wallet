@@ -1,19 +1,26 @@
-import { PageProps as InertiaPageProps } from '@inertiajs/core';
+import '@inertiajs/core';
 import { AxiosInstance } from 'axios';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { route as ziggyRoute } from 'ziggy-js';
-import { PageProps as AppPageProps } from './';
+import { Page } from './';
 
 declare global {
     interface Window {
         axios: AxiosInstance;
         Pusher: typeof Pusher;
-        Echo: Echo;
+        Echo: Echo<'pusher'>;
     }
 
     /* eslint-disable no-var */
     var route: typeof ziggyRoute;
+
+    interface ViewTransition {
+        readonly finished: Promise<void>;
+        readonly ready: Promise<void>;
+        readonly updateCallbackDone: Promise<void>;
+        skipTransition(): void;
+    }
 }
 
 declare module 'vue' {
@@ -23,5 +30,5 @@ declare module 'vue' {
 }
 
 declare module '@inertiajs/core' {
-    interface PageProps extends InertiaPageProps, AppPageProps {}
+    interface PageProps extends Page {}
 }

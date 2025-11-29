@@ -1,7 +1,8 @@
-import { mount } from '@vue/test-utils';
 import Dashboard from '@/Pages/Dashboard.vue';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Paginated, Transaction, User } from '@/types';
+import { mount } from '@vue/test-utils';
+import Echo from 'laravel-echo';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // --- Mock Data ---
 const currentUser: User = {
@@ -48,7 +49,7 @@ const initialProps = {
 
 // Mock Inertia's usePage()
 vi.mock('@inertiajs/vue3', async (importOriginal) => {
-    const original: any = await importOriginal();
+    const original = await importOriginal<typeof import('@inertiajs/vue3')>();
     return {
         ...original,
         usePage: () => ({
@@ -70,7 +71,7 @@ const mockPrivate = vi.fn(() => ({ listen: mockListen }));
 window.Echo = {
     private: mockPrivate,
     leave: vi.fn(),
-} as any;
+} as unknown as Echo<'pusher'>;
 
 describe('Dashboard.vue', () => {
     beforeEach(() => {
@@ -86,6 +87,7 @@ describe('Dashboard.vue', () => {
             // both route('name') and route().current('name') calls.
             global: {
                 mocks: {
+                    $t: (key: string) => key,
                     route: (name?: string) => {
                         if (name) {
                             return `http://localhost/${name}`;
@@ -103,10 +105,15 @@ describe('Dashboard.vue', () => {
         // 1. Verify initial state
         expect(wrapper.text()).toContain('$1,000.00');
         expect(wrapper.text()).toContain('Received from Other User');
-        expect(wrapper.findAll('[data-testid="transaction-item"]').length).toBe(1);
+        expect(wrapper.findAll('[data-testid="transaction-item"]').length).toBe(
+            1,
+        );
 
         // 2. Simulate the Pusher event
-        const newTransactionEvent: { balance: number; transaction: Transaction } = {
+        const newTransactionEvent: {
+            balance: number;
+            transaction: Transaction;
+        } = {
             balance: 950.5,
             transaction: {
                 id: 2,
@@ -130,7 +137,11 @@ describe('Dashboard.vue', () => {
         // 3. Assert the UI has updated
         expect(wrapper.text()).toContain('$950.50'); // Balance is updated
         expect(wrapper.text()).toContain('Sent to Other User'); // New transaction text
-        expect(wrapper.findAll('[data-testid="transaction-item"]').length).toBe(2); // New transaction is added
-        expect(wrapper.findAll('[data-testid="transaction-item"]')[0].text()).toContain('Sent to Other User'); // New transaction is at the top
+        expect(wrapper.findAll('[data-testid="transaction-item"]').length).toBe(
+            2,
+        ); // New transaction is added
+        expect(
+            wrapper.findAll('[data-testid="transaction-item"]')[0].text(),
+        ).toContain('Sent to Other User'); // New transaction is at the top
     });
 });

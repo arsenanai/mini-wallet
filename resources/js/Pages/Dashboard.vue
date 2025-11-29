@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
-import { Head, usePage } from '@inertiajs/vue3';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Balance from '@/Components/Balance.vue';
 import TransactionHistory from '@/Components/TransactionHistory.vue';
 import TransferForm from '@/Components/TransferForm.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Paginated, Transaction, User } from '@/types';
+import { Head, usePage } from '@inertiajs/vue3';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 const props = defineProps<{
     balance: number;
@@ -41,7 +41,7 @@ onUnmounted(() => {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Mini Wallet Dashboard
+                {{ $t('dashboard.header') }}
             </h2>
         </template>
 
@@ -49,9 +49,7 @@ onUnmounted(() => {
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                 <!-- Balance and Transfer Form Section -->
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div
-                        class="bg-white p-4 shadow sm:rounded-lg sm:p-8"
-                    >
+                    <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
                         <Balance :balance="localBalance" />
                     </div>
                     <!-- TransferForm Component will go here -->

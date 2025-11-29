@@ -15,7 +15,9 @@ const formattedBalance = computed(() => {
 
 <template>
     <div class="space-y-2">
-        <h3 class="text-lg font-medium text-gray-500">Current Balance</h3>
+        <h3 class="text-lg font-medium text-gray-500">
+            {{ $t('dashboard.balance') }}
+        </h3>
         <p class="text-4xl font-bold text-gray-800">{{ formattedBalance }}</p>
     </div>
 </template>

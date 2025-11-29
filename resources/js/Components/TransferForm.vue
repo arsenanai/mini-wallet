@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     recipient_email: '',
@@ -22,10 +22,15 @@ const submit = () => {
 
 <template>
     <div class="space-y-4">
-        <h3 class="text-lg font-medium text-gray-900">Send Money</h3>
+        <h3 class="text-lg font-medium text-gray-900">
+            {{ $t('dashboard.send_money') }}
+        </h3>
         <form class="space-y-6" @submit.prevent="submit">
             <div>
-                <InputLabel for="recipient_email" value="Recipient's Email" />
+                <InputLabel
+                    for="recipient_email"
+                    :value="$t('dashboard.recipient_email')"
+                />
                 <TextInput
                     id="recipient_email"
                     v-model="form.recipient_email"
@@ -41,7 +46,7 @@ const submit = () => {
             </div>
 
             <div>
-                <InputLabel for="amount" value="Amount" />
+                <InputLabel for="amount" :value="$t('dashboard.amount')" />
                 <TextInput
                     id="amount"
                     v-model="form.amount"
@@ -56,9 +61,9 @@ const submit = () => {
 
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">
-                    Send Money
+                    {{ $t('dashboard.send_money') }}
                 </PrimaryButton>
-                
+
                 <Transition
                     enter-active-class="transition ease-in-out"
                     enter-from-class="opacity-0"
@@ -69,7 +74,7 @@ const submit = () => {
                         v-if="form.recentlySuccessful"
                         class="text-sm text-gray-600"
                     >
-                        Transfer successful!
+                        {{ $t('dashboard.transfer_successful') }}
                     </p>
                 </Transition>
             </div>

@@ -11,7 +11,7 @@ export interface Transaction {
     amount: number;
     commission_fee: number;
     type: 'transfer' | 'deposit';
-    status: 'completed' | 'failed';
+    status: 'pending' | 'completed' | 'failed';
     created_at: string;
     sender: User;
     receiver: User;
@@ -29,6 +29,7 @@ export interface Paginated<T> {
         current_page: number;
         from: number;
         last_page: number;
+        links: { url: string | null; label: string; active: boolean }[];
         path: string;
         per_page: number;
         to: number;
@@ -36,10 +37,6 @@ export interface Paginated<T> {
     };
 }
 
-export type PageProps<
-    T extends Record<string, unknown> = Record<string, unknown>,
-> = T & {
-    auth: {
-        user: User;
-    };
-};
+export interface Page {
+    auth: { user: User };
+}
