@@ -12,7 +12,7 @@ This milestone covers the initial installation and configuration of the project 
     [x] Set `SESSION_DRIVER` to `database`.
     [x] Add Pusher credentials (`PUSHER_APP_ID`, `PUSHER_APP_KEY`, `PUSHER_SECRET`, `PUSHER_APP_CLUSTER`).
     [x] Set `BROADCAST_CONNECTION=pusher`.
-  [ ] 1.5 Install Dev Tools & Configure IDE:
+  [x] 1.5 Install Dev Tools & Configure IDE:
     [x] Install and configure `barryvdh/laravel-ide-helper`. (PHP)
     [x] Install and configure `laravel/pint`. (PHP)
     [x] Set up ESLint and Prettier for TypeScript/Vue in the frontend.
@@ -21,8 +21,8 @@ This milestone covers the initial installation and configuration of the project 
 Milestone 2: Database & Models
 This milestone focuses on building the data structure for the application.
 
-  [ ] 2.1 Modify `users` Table Migration:
-    [ ] In the existing `create_users_table` migration, add a `balance` column: `$table->decimal('balance', 15, 4)->default(0);`.
+  [x] 2.1 Modify `users` Table Migration:
+    [x] In the existing `create_users_table` migration, add a `balance` column: `$table->decimal('balance', 15, 4)->default(0);`.
   [ ] 2.2 Create `transactions` Table Migration:
     [ ] Generate migration: `php artisan make:migration create_transactions_table`.
     [ ] Add columns:
