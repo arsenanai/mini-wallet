@@ -1,0 +1,130 @@
+Project TODO List: Mini Wallet
+
+Milestone 1: Project Setup & Foundation (Current Status: ✅ Complete)
+This milestone covers the initial installation and configuration of the project environment.
+
+  [x] 1.1 Install Laravel Framework: Create a fresh Laravel 12 project.
+  [x] 1.2 Install Frontend Scaffolding: Install Laravel Breeze with the Vue + Inertia stack.
+  [x] 1.3 Resolve NPM Dependencies: Fix `vite` and `@vitejs/plugin-vue` version conflicts in `package.json` and run `npm install`.
+  [x] 1.4 Configure Environment (`.env`):
+    [x] Set `DB_CONNECTION` to `mysql` or `pgsql` and add credentials.
+    [x] Set `QUEUE_CONNECTION` to `database` to handle jobs reliably.
+    [x] Set `SESSION_DRIVER` to `database`.
+    [x] Add Pusher credentials (`PUSHER_APP_ID`, `PUSHER_APP_KEY`, `PUSHER_SECRET`, `PUSHER_APP_CLUSTER`).
+    [x] Set `BROADCAST_CONNECTION=pusher`.
+  [ ] 1.5 Install Dev Tools & Configure IDE:
+    [ ] `composer require --dev barryvdh/laravel-ide-helper` and generate helpers (`php artisan ide-helper:generate`).
+    [ ] `composer require --dev laravel/pint` and configure `pint.json` for PSR-12.
+    [ ] Set up ESLint and Prettier for TypeScript/Vue in the frontend.
+  [ ] 1.6 Initial Git Commit: Create the first commit with the message `"feat: Initial project setup with Laravel and Vue scaffolding"`.
+
+Milestone 2: Database & Models
+This milestone focuses on building the data structure for the application.
+
+  [ ] 2.1 Modify `users` Table Migration:
+    [ ] In the existing `create_users_table` migration, add a `balance` column: `$table->decimal('balance', 15, 4)->default(0);`.
+  [ ] 2.2 Create `transactions` Table Migration:
+    [ ] Generate migration: `php artisan make:migration create_transactions_table`.
+    [ ] Add columns:
+      sender_id (foreign key to `users`).
+      receiver_id (foreign key to `users`).
+      amount (`decimal(15, 4)`).
+      commission_fee (`decimal(15, 4)`).
+      status (`enum(['completed', 'failed'])`).
+      type (`enum(['transfer', 'deposit'])`).
+      reference_id (`uuid`, unique).
+  [ ] 2.3 Create Models & Relationships:
+    [ ] Create `Transaction` model: `php artisan make:model Transaction`.
+    [ ] Define `User` -> `Transaction` relationships (sent/received).
+    [ ] Define `Transaction` -> `User` relationships (sender/receiver).
+    [ ] Set `fillable` properties and `casts` for decimal, enum, and uuid columns in both models.
+  [ ] 2.4 Create Database Seeders:
+    [ ] Create a seeder to add the central commission account (e.g., `commission@wallet.app`).
+    [ ] Add 2-3 sample users with initial balances for testing.
+    [ ] Run migrations and seed the database: `php artisan migrate:fresh --seed`.
+
+Milestone 3: Core Backend Logic (TDD)
+This is the heart of the application, developed with a test-first approach.
+
+  [ ] 3.1 Setup Internationalization (i18n):
+    [ ] Create language files for `en` in `lang/en/`.
+    [ ] Add validation and response messages to language files (e.g., `messages.php`).
+  [ ] 3.2 Create `TransactionService`:
+    [ ] Create the service class in `app/Services/TransactionService.php`.
+    [ ] Write Tests First: Create `tests/Unit/TransactionServiceTest.php`.
+    [ ] Test and implement the `createTransfer` method, which must:
+      [ ] Wrap the entire logic in a `DB::transaction()`.
+      [ ] Use pessimistic locking (`lockForUpdate()`) on sender and receiver user records.
+      [ ] Validate sender's balance.
+      [ ] Debit sender's balance (amount + 1.5% commission).
+      [ ] Credit receiver's balance.
+      [ ] Credit commission account's balance.
+      [ ] Create the `Transaction` record with `status: 'completed'`.
+      [ ] Handle exceptions and rollback on failure, creating a failed transaction record.
+  [ ] 3.3 Implement API Endpoints:
+    [ ] `POST /api/transactions`:
+      [ ] Create `TransferRequest`: `php artisan make:request TransferRequest`.
+      [ ] Add validation rules: `receiver_email` (exists in `users`, not self), `amount` (positive number).
+      [ ] Create `TransactionController` with a `store` method.
+      [ ] The `store` method should call `TransactionService->createTransfer()`.
+      [ ] Write Feature Test: `tests/Feature/TransactionTest.php` to test the full API request flow.
+    [ ] `GET /api/transactions`:
+      [ ] Add an `index` method to `TransactionController`.
+      [ ] Implement logic to return the authenticated user's balance and a paginated list of their transactions (both sent and received).
+      [ ] Write Feature Test: Add a test to `TransactionTest.php` to verify the endpoint returns correct data.
+
+Milestone 4: Real-time Integration with Pusher
+This milestone connects the backend logic to the frontend for instant updates.
+
+  [ ] 4.1 Create `TransactionCompleted` Event:
+    [ ] Generate event: `php artisan make:event TransactionCompleted`.
+    [ ] Implement `ShouldBroadcast`.
+    [ ] Define a private channel for each user (e.g., `App.Models.User.{id}`).
+    [ ] Configure the event payload to include the new transaction record and the updated balance.
+  [ ] 4.2 Broadcast Event from `TransactionService`:
+    [ ] After a successful transfer, dispatch the `TransactionCompleted` event for both the sender and the receiver.
+  [ ] 4.3 Configure Broadcasting Routes:
+    [ ] Uncomment `BroadcastServiceProvider` in `config/app.php`.
+    [ ] Ensure `routes/channels.php` correctly authorizes users for their private channels.
+  [ ] 4.4 Test Broadcasting (TDD):
+    [ ] In `TransactionTest.php`, use `Event::fake()` to assert that `TransactionCompleted` is dispatched correctly upon a successful API call.
+
+Milestone 5: Frontend Development (Vue.js)
+This milestone focuses on building the user interface.
+
+  [ ] 5.1 Setup Frontend Environment:
+    [ ] Install `pusher-js` and `laravel-echo`: `npm install --save-dev pusher-js laravel-echo`.
+    [ ] Configure Laravel Echo in `resources/js/bootstrap.js` to connect to Pusher.
+  [ ] 5.2 Create Dashboard Page:
+    [ ] Create a main `Dashboard.vue` page protected by `auth` middleware.
+  [ ] 5.3 Build Balance Component:
+    [ ] Create a component to display the user's current balance.
+    [ ] Fetch initial balance from the `index` endpoint.
+  [ ] 5.4 Build `TransactionHistory` Component:
+    [ ] Create a component to display a list of transactions.
+    [ ] Fetch initial history from the `index` endpoint.
+    [ ] Format currency and dates appropriately.
+  [ ] 5.5 Build `TransferForm` Component (Bonus Points):
+    [ ] Create a form with fields for "Recipient Email" and "Amount".
+    [ ] Implement real-time validation for inputs.
+    [ ] On submit, post data to `/api/transactions`.
+    [ ] Provide user feedback (e.g., "Transfer successful!", "Insufficient funds.").
+  [ ] 5.6 Implement Real-time Updates on Frontend:
+    [ ] In the `Dashboard.vue` (or a parent component), listen for the `TransactionCompleted` event on the user's private channel.
+    [ ] When an event is received, update the `Balance` and `TransactionHistory` components with the new data from the event payload without a page refresh.
+
+Milestone 6: Finalization & Documentation
+This final milestone ensures the project is complete, polished, and easy to run.
+
+  [ ] 6.1 Code Review and Refactoring:
+    [ ] Review all code for clarity, performance, and adherence to PSR-12/linter rules.
+    [ ] Ensure all business logic is in Service classes and Controllers are thin.
+  [ ] 6.2 Write Unit and Feature Tests:
+    [ ] Ensure all critical paths are covered by tests. Aim for high test coverage.
+  [ ] 6.3 Update `README.md`:
+    [ ] Write clear, step-by-step instructions on how to set up the project locally.
+    [ ] Include commands for: cloning the repo, installing composer/npm dependencies, setting up the `.env` file, running migrations/seeders, and starting the servers.
+  [ ] 6.4 Final Git Commit & Submission:
+    [ ] Ensure the Git history is clean and has meaningful commit messages.
+    [ ] Push the final version to the Git repository.
+    [ ] Submit the repository link.

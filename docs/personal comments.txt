@@ -1,0 +1,10 @@
+1. We need central account to which the commission will be transferred, such a way we will not need to develop complex data structure. Include that account in the database seeder.
+2. Use DECIMAL(15,4) precision for columns with monetary values.
+3. I prefer identifiyng users by email address, just like in paypal
+4. Only one wallet per user account would be enough for this test assignment, don't overcomplicate the project by adding multiple wallets to single user.
+5. use pessimistic locking within a transaction to prevent race conditions.
+6. add status(completed, failed), type(transfer, deposit) and unique reference_id(for idempotency) columns to transactions table.
+7. When broadcasting the update event via Pusher, include the updated balance and the new transaction record itself. This would give the frontend all the information it needs to update the UI without making a follow-up API call.
+8. Block transfers to self account by validating the email address field.
+9. Use monolith with Laravel setup for rest api and Vue SPA with vite(or whatever builder is used in the current Laravel's frontend). Make sure to add IDE helpers(autoformatters) to ensure PSR-12 standard in PHP code, and similar configuration for the frontend as well. In frontend use Typescript, in PHP use strict types. Use Tailwind for styling elements, heroicons for graphical images. Use i18n for internationalization, by default set English, make sure to pass current locale to backend, send messages in translated way to the frontend. Use components in vue to separate frontend logic. Use Service classes to contain all needed implementation logic in PHP, such a way you could unit test them, the Controllers will just pass the request params and return the result.
+8. Prepare the TODO list, Develop only via TDD, move on to the next task only after successfully verifying by tests the current one, committing the progress in git.
