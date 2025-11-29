@@ -38,10 +38,10 @@ This milestone focuses on building the data structure for the application.
     [x] Define `User` -> `Transaction` relationships (sent/received).
     [x] Define `Transaction` -> `User` relationships (sender/receiver).
     [x] Set `fillable` properties and `casts` for decimal, enum, and uuid columns in both models.
-  [ ] 2.4 Create Database Seeders:
-    [ ] Create a seeder to add the central commission account (e.g., `commission@wallet.app`).
-    [ ] Add 2-3 sample users with initial balances for testing.
-    [ ] Run migrations and seed the database: `php artisan migrate:fresh --seed`.
+  [x] 2.4 Create Database Seeders:
+    [x] Create a seeder to add the central commission account (e.g., `commission@wallet.app`).
+    [x] Add 100 sample users with initial balances for testing.
+    [x] Run migrations and seed the database: `php artisan migrate:fresh --seed`.
 
 Milestone 3: Core Backend Logic (TDD)
 This is the heart of the application, developed with a test-first approach.
