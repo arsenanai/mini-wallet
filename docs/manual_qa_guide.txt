@@ -1,0 +1,90 @@
+Manual QA Guide: Mini Wallet Application
+
+Objective: To verify that all core features of the Mini Wallet application are working correctly from a user's perspective.
+
+--------------------------------------------------
+1. Prerequisites & Setup
+--------------------------------------------------
+
+Before you begin, ensure your local development environment is fully running:
+
+1. Start the Laravel Web Server:
+   php artisan serve
+
+2. Start the Vite Frontend Server:
+   npm run dev
+
+3. Run the Queue Worker (MANDATORY for real-time updates):
+   php artisan queue:work
+
+4. Prepare Test Users:
+   - Your database should be seeded with users.
+   - Identify two users from your database to act as the sender and receiver.
+   - User A (Sender): Note their email and password.
+   - User B (Receiver): Note their email and password.
+
+--------------------------------------------------
+2. Test Scenarios
+--------------------------------------------------
+
+You will need two separate browser windows or profiles to test the real-time functionality effectively.
+
+- Browser Window 1: Logged in as User A (Sender).
+- Browser Window 2: Logged in as User B (Receiver).
+
+---
+
+Test Case 1: Successful Money Transfer & Real-Time Update
+
+Scenario: User A sends a valid amount of money to User B.
+
+Steps:
+1. Login: In Browser 1, log in as User A. In Browser 2, log in as User B.
+2. Check Initial State: In both browsers, observe the initial balance and transaction history for each user.
+3. Initiate Transfer: In Browser 1 (User A), fill out the "Send Money" form:
+   - Recipient Email: Enter the email of User B.
+   - Amount: Enter `100`.
+4. Submit: Click the "Send" button.
+
+Expected Result:
+- In Browser 1 (User A):
+  - A success message "Transfer successful!" appears briefly.
+  - The form fields are cleared.
+  - Instantly (without refresh):
+    - The balance decreases by 101.50.
+    - A new "Sent to [User B's Name]" transaction appears at the top of the history.
+- In Browser 2 (User B):
+  - Instantly (without refresh):
+    - The balance increases by 100.00.
+    - A new "Received from [User A's Name]" transaction appears at the top of the history.
+
+---
+
+Test Case 2: Insufficient Funds
+
+Scenario: User A attempts to send more money than they have.
+
+Steps:
+1. Initiate Transfer: In Browser 1 (User A), enter an amount that is greater than their current balance.
+2. Submit: Click "Send".
+
+Expected Result:
+- An error message "Insufficient funds." should appear below the amount field.
+- The transfer should NOT proceed.
+- No changes should occur to any user's balance or transaction history.
+
+---
+
+Test Case 3: Invalid Input Validation
+
+Scenario: User A attempts a transfer with invalid data.
+
+Steps:
+1. Test Non-existent User: Enter a fake email address (e.g., no-one@nowhere.com) and a valid amount. Click "Send".
+2. Test Self-Transfer: Enter User A's own email address in the recipient field. Click "Send".
+3. Test Invalid Amount: Enter a negative number (e.g., -50) or zero in the amount field. Click "Send".
+
+Expected Result (for all steps):
+- A clear validation error message appears under the relevant form field.
+- The transfer should NOT proceed.
+- No changes should occur to any user's balance or transaction history.
