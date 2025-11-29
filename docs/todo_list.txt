@@ -92,26 +92,42 @@ This milestone connects the backend logic to the frontend for instant updates.
 Milestone 5: Frontend Development (Vue.js)
 This milestone focuses on building the user interface.
 
-  [ ] 5.1 Setup Frontend Environment:
-    [ ] Install `pusher-js` and `laravel-echo`: `npm install --save-dev pusher-js laravel-echo`.
-    [ ] Configure Laravel Echo in `resources/js/bootstrap.js` to connect to Pusher.
-  [ ] 5.2 Create Dashboard Page:
-    [ ] Create a main `Dashboard.vue` page protected by `auth` middleware.
-  [ ] 5.3 Build Balance Component:
-    [ ] Create a component to display the user's current balance.
-    [ ] Fetch initial balance from the `index` endpoint.
-  [ ] 5.4 Build `TransactionHistory` Component:
-    [ ] Create a component to display a list of transactions.
-    [ ] Fetch initial history from the `index` endpoint.
-    [ ] Format currency and dates appropriately.
-  [ ] 5.5 Build `TransferForm` Component (Bonus Points):
-    [ ] Create a form with fields for "Recipient Email" and "Amount".
-    [ ] Implement real-time validation for inputs.
-    [ ] On submit, post data to `/api/transactions`.
-    [ ] Provide user feedback (e.g., "Transfer successful!", "Insufficient funds.").
-  [ ] 5.6 Implement Real-time Updates on Frontend:
-    [ ] In the `Dashboard.vue` (or a parent component), listen for the `TransactionCompleted` event on the user's private channel.
-    [ ] When an event is received, update the `Balance` and `TransactionHistory` components with the new data from the event payload without a page refresh.
+  [x] 5.1 Setup Frontend Environment:
+    [x] Install `pusher-js` and `laravel-echo`: `npm install --save-dev pusher-js laravel-echo`.
+    [x] Configure Laravel Echo in `resources/js/bootstrap.js` to connect to Pusher.
+  [x] 5.2 Create Dashboard Page:
+    [x] Create a main `Dashboard.vue` page protected by `auth` middleware.
+  [x] 5.3 Build Balance Component:
+    [x] Create a component to display the user's current balance.
+    [x] Fetch initial balance from the `index` endpoint.
+  [x] 5.4 Build `TransactionHistory` Component:
+    [x] Create a component to display a list of transactions.
+    [x] Fetch initial history from the `index` endpoint.
+    [x] Format currency and dates appropriately.
+  [x] 5.5 Build `TransferForm` Component (Bonus Points):
+    [x] Create a form with fields for "Recipient Email" and "Amount".
+    [x] Implement real-time validation for inputs.
+    [x] On submit, post data to `/api/transactions`.
+    [x] Provide user feedback (e.g., "Transfer successful!", "Insufficient funds.").
+  [x] 5.6 Implement Real-time Updates on Frontend:
+    [x] In the `Dashboard.vue` (or a parent component), listen for the `TransactionCompleted` event on the user's private channel.
+    [x] When an event is received, update the `Balance` and `TransactionHistory` components with the new data from the event payload without a page refresh.
+  [x] 5.7 Covering with Unit and Feature Tests:
+    [x] Setup Frontend Testing Environment: Install and configure Vue Test Utils and a test runner like Vitest.
+    [x] Balance Component (`Balance.vue`):
+      [x] Unit Test: It correctly formats a numeric balance into a currency string (e.g., 123.45 -> $123.45).
+    [x] Transaction History Component (`TransactionHistory.vue`):
+      [x] Unit Test: It correctly formats a date string into a readable format.
+      [x] Feature Test: It displays a "No transactions yet" message when the transaction list is empty.
+      [x] Feature Test: It correctly renders an outgoing transaction with the correct icon, text, and negative amount.
+      [x] Feature Test: It correctly renders an incoming transaction with the correct icon, text, and positive amount.
+    [x] Transfer Form Component (`TransferForm.vue`):
+      [x] Feature Test: It displays validation errors for email and amount fields when the server returns them.
+      [x] Feature Test: It disables the submit button while the form is processing to prevent double submission.
+      [x] Feature Test: It resets the form and shows a "Transfer successful!" message upon a successful API response.
+    [x] Dashboard Page (`Dashboard.vue`):
+      [x] Feature Test (Integration): It updates the balance and prepends a new transaction to the history when a `TransactionCompleted` event is received via Pusher.
+    [ ] Automated Visual Testing: Implement visual regression tests to automatically verify UI styles, spacing, and layout.
 
 Milestone 6: Finalization & Documentation
 This final milestone ensures the project is complete, polished, and easy to run.

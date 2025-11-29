@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "include": [
+    "vitest.config.ts",
     "vite.config.ts",
     "tailwind.config.ts",
     "postcss.config.cjs"
@@ -8,6 +9,7 @@
   "compilerOptions": {
     "composite": true, // Required for project references
     "module": "NodeNext",
-    "noEmit": true
+    "noEmit": true,
+    "types": ["node", "vitest/node"]
   }
 }

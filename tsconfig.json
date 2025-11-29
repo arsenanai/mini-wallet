@@ -9,6 +9,7 @@
         "target": "ESNext",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
+        "types": ["vitest/globals"],
         "noEmit": true,
         "skipLibCheck": true,
         "paths": {
@@ -16,5 +17,9 @@
             "ziggy-js": ["./vendor/tightenco/ziggy"]
         }
     },
-    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue"]
+    "include": [
+        "resources/js/**/*.ts",
+        "resources/js/**/*.vue",
+        "resources/js/tests/**/*.ts"
+    ]
 }
