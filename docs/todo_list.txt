@@ -46,48 +46,48 @@ This milestone focuses on building the data structure for the application.
 Milestone 3: Core Backend Logic (TDD)
 This is the heart of the application, developed with a test-first approach.
 
-  [ ] 3.1 Setup Internationalization (i18n):
-    [ ] Create language files for `en` in `lang/en/`.
-    [ ] Add validation and response messages to language files (e.g., `messages.php`).
-  [ ] 3.2 Create `TransactionService`:
-    [ ] Create the service class in `app/Services/TransactionService.php`.
-    [ ] Write Tests First: Create `tests/Unit/TransactionServiceTest.php`.
-    [ ] Test and implement the `createTransfer` method, which must:
-      [ ] Wrap the entire logic in a `DB::transaction()`.
-      [ ] Use pessimistic locking (`lockForUpdate()`) on sender and receiver user records.
-      [ ] Validate sender's balance.
-      [ ] Debit sender's balance (amount + 1.5% commission).
-      [ ] Credit receiver's balance.
-      [ ] Credit commission account's balance.
-      [ ] Create the `Transaction` record with `status: 'completed'`.
-      [ ] Handle exceptions and rollback on failure, creating a failed transaction record.
-  [ ] 3.3 Implement API Endpoints:
-    [ ] `POST /api/transactions`:
-      [ ] Create `TransferRequest`: `php artisan make:request TransferRequest`.
-      [ ] Add validation rules: `receiver_email` (exists in `users`, not self), `amount` (positive number).
-      [ ] Create `TransactionController` with a `store` method.
-      [ ] The `store` method should call `TransactionService->createTransfer()`.
-      [ ] Write Feature Test: `tests/Feature/TransactionTest.php` to test the full API request flow.
-    [ ] `GET /api/transactions`:
-      [ ] Add an `index` method to `TransactionController`.
-      [ ] Implement logic to return the authenticated user's balance and a paginated list of their transactions (both sent and received).
-      [ ] Write Feature Test: Add a test to `TransactionTest.php` to verify the endpoint returns correct data.
+  [x] 3.1 Setup Internationalization (i18n):
+    [x] Create language files for `en` in `lang/en/`.
+    [x] Add validation and response messages to language files (e.g., `messages.php`).
+  [x] 3.2 Create `TransactionService`:
+    [x] Create the service class in `app/Services/TransactionService.php`.
+    [x] Write Tests First: Create `tests/Unit/TransactionServiceTest.php`.
+    [x] Test and implement the `createTransfer` method, which must:
+      [x] Wrap the entire logic in a `DB::transaction()`.
+      [x] Use pessimistic locking (`lockForUpdate()`) on sender and receiver user records.
+      [x] Validate sender's balance.
+      [x] Debit sender's balance (amount + 1.5% commission).
+      [x] Credit receiver's balance.
+      [x] Credit commission account's balance.
+      [x] Create the `Transaction` record with `status: 'completed'`.
+      [x] Handle exceptions and rollback on failure, creating a failed transaction record.
+  [x] 3.3 Implement API Endpoints:
+    [x] `POST /api/transactions`:
+      [x] Create `TransferRequest`: `php artisan make:request TransferRequest`.
+      [x] Add validation rules: `receiver_email` (exists in `users`, not self), `amount` (positive number).
+      [x] Create `TransactionController` with a `store` method.
+      [x] The `store` method should call `TransactionService->createTransfer()`.
+      [x] Write Feature Test: `tests/Feature/TransactionTest.php` to test the full API request flow.
+    [x] `GET /api/transactions`:
+      [x] Add an `index` method to `TransactionController`.
+      [x] Implement logic to return the authenticated user's balance and a paginated list of their transactions (both sent and received).
+      [x] Write Feature Test: Add a test to `TransactionTest.php` to verify the endpoint returns correct data.
 
 Milestone 4: Real-time Integration with Pusher
 This milestone connects the backend logic to the frontend for instant updates.
 
-  [ ] 4.1 Create `TransactionCompleted` Event:
-    [ ] Generate event: `php artisan make:event TransactionCompleted`.
-    [ ] Implement `ShouldBroadcast`.
-    [ ] Define a private channel for each user (e.g., `App.Models.User.{id}`).
-    [ ] Configure the event payload to include the new transaction record and the updated balance.
-  [ ] 4.2 Broadcast Event from `TransactionService`:
-    [ ] After a successful transfer, dispatch the `TransactionCompleted` event for both the sender and the receiver.
-  [ ] 4.3 Configure Broadcasting Routes:
-    [ ] Uncomment `BroadcastServiceProvider` in `config/app.php`.
-    [ ] Ensure `routes/channels.php` correctly authorizes users for their private channels.
-  [ ] 4.4 Test Broadcasting (TDD):
-    [ ] In `TransactionTest.php`, use `Event::fake()` to assert that `TransactionCompleted` is dispatched correctly upon a successful API call.
+  [x] 4.1 Create `TransactionCompleted` Event:
+    [x] Generate event: `php artisan make:event TransactionCompleted`.
+    [x] Implement `ShouldBroadcast`.
+    [x] Define a private channel for each user (e.g., `App.Models.User.{id}`).
+    [x] Configure the event payload to include the new transaction record and the updated balance.
+  [x] 4.2 Broadcast Event from `TransactionService`:
+    [x] After a successful transfer, dispatch the `TransactionCompleted` event for both the sender and the receiver.
+  [x] 4.3 Configure Broadcasting Routes:
+    [x] Uncomment `BroadcastServiceProvider` in `config/app.php`.
+    [x] Ensure `routes/channels.php` correctly authorizes users for their private channels.
+  [x] 4.4 Test Broadcasting (TDD):
+    [x] In `TransactionTest.php`, use `Event::fake()` to assert that `TransactionCompleted` is dispatched correctly upon a successful API call.
 
 Milestone 5: Frontend Development (Vue.js)
 This milestone focuses on building the user interface.
