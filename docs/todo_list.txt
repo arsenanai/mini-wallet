@@ -13,9 +13,9 @@ This milestone covers the initial installation and configuration of the project 
     [x] Add Pusher credentials (`PUSHER_APP_ID`, `PUSHER_APP_KEY`, `PUSHER_SECRET`, `PUSHER_APP_CLUSTER`).
     [x] Set `BROADCAST_CONNECTION=pusher`.
   [ ] 1.5 Install Dev Tools & Configure IDE:
-    [x] `composer require --dev barryvdh/laravel-ide-helper` and generate helpers (`php artisan ide-helper:generate`).
-    [x] `composer require --dev laravel/pint` and configure `pint.json` for PSR-12.
-    [ ] Set up ESLint and Prettier for TypeScript/Vue in the frontend.
+    [x] Install and configure `barryvdh/laravel-ide-helper`. (PHP)
+    [x] Install and configure `laravel/pint`. (PHP)
+    [x] Set up ESLint and Prettier for TypeScript/Vue in the frontend.
   [x] 1.6 Initial Git Commit: Create the first commit with the message `"feat: Initial project setup with Laravel and Vue scaffolding"`.
 
 Milestone 2: Database & Models
