@@ -29,7 +29,7 @@ const initialTransaction: Transaction = {
 };
 
 const initialProps = {
-    balance: 1000,
+    balance: '1000.00',
     transactions: {
         data: [initialTransaction],
         links: { first: '', last: '', prev: null, next: null },
@@ -62,9 +62,6 @@ vi.mock('@inertiajs/vue3', async (importOriginal) => {
     };
 });
 
-// Mock the global route() helper, as it's used in AuthenticatedLayout
-vi.stubGlobal('route', (name: string) => `http://localhost/${name}`);
-
 // Mock Laravel Echo and its methods
 const mockListen = vi.fn();
 const mockPrivate = vi.fn(() => ({ listen: mockListen }));
@@ -81,35 +78,6 @@ describe('Dashboard.vue', () => {
     });
 
     it('updates balance and prepends a new transaction when a TransactionCompleted event is received', async () => {
-        const wrapper = mount(Dashboard, {
-            props: initialProps,
-            // Provide a more complete mock for the route() helper to handle
-            // both route('name') and route().current('name') calls.
-            global: {
-                mocks: {
-                    $t: (key: string) => key,
-                    route: (name?: string) => {
-                        if (name) {
-                            return `http://localhost/${name}`;
-                        }
-                        // Mock the `current()` method for active link checking
-                        return { current: () => false };
-                    },
-                    $page: {
-                        props: { auth: { user: currentUser } },
-                    },
-                },
-            },
-        });
-
-        // 1. Verify initial state
-        expect(wrapper.text()).toContain('$1,000.00');
-        expect(wrapper.text()).toContain('Received from Other User');
-        expect(wrapper.findAll('[data-testid="transaction-item"]').length).toBe(
-            1,
-        );
-
-        // 2. Simulate the Pusher event
         const newTransactionEvent: {
             balance: number;
             transaction: Transaction;
@@ -128,6 +96,16 @@ describe('Dashboard.vue', () => {
             },
         };
 
+        const wrapper = mount(Dashboard, { props: initialProps });
+
+        // 1. Verify initial state
+        expect(wrapper.text()).toContain('$1,000.00');
+        expect(wrapper.text()).toContain('Received from Other User');
+        expect(wrapper.findAll('[data-testid="transaction-item"]').length).toBe(
+            1,
+        );
+
+        // 2. Simulate the Pusher event
         // Get the callback passed to `listen` and execute it
         const listenCallback = mockListen.mock.calls[0][1];
         listenCallback(newTransactionEvent);

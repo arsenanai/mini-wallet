@@ -1,7 +1,6 @@
 import TransactionHistory from '@/Components/TransactionHistory.vue';
-import { i18n } from '@/i18n';
 import { Paginated, Transaction, User } from '@/types';
-import { config, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 
 const currentUser: User = {
@@ -43,11 +42,6 @@ vi.mock('@inertiajs/vue3', async (importOriginal) => {
         }),
     };
 });
-
-// We still need to spy on the composable-based `t` function for this component
-vi.spyOn(i18n.global, 't').mockImplementation(
-    config.global.mocks.$t as (key: string | number) => string,
-);
 
 describe('TransactionHistory.vue', () => {
     it('correctly formats a date string into a readable format', () => {

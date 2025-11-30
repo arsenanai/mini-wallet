@@ -7,7 +7,6 @@ namespace Tests\Feature;
 use App\Events\TransactionCompleted;
 use App\Models\Transaction;
 use App\Models\User;
-use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Event;
 
 beforeEach(function () {

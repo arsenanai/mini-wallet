@@ -3,14 +3,12 @@ import Balance from '@/Components/Balance.vue';
 import TransactionHistory from '@/Components/TransactionHistory.vue';
 import TransferForm from '@/Components/TransferForm.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Paginated, Transaction, User } from '@/types';
+import { User } from '@/types';
+import { DashboardDataResponse } from '@/types/api';
 import { Head, usePage } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, ref } from 'vue';
 
-const props = defineProps<{
-    balance: number;
-    transactions: Paginated<Transaction>;
-}>();
+const props = defineProps<DashboardDataResponse>();
 
 const user = usePage().props.auth.user as User;
 

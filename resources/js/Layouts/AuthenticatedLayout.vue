@@ -4,9 +4,9 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import { User } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
-import { User } from '@/types';
 
 const showingNavigationDropdown = ref(false);
 const user = computed(() => usePage().props.auth.user as User);

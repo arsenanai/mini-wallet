@@ -6,6 +6,7 @@ import {
     XCircleIcon,
 } from '@heroicons/vue/24/solid';
 import { usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 
 defineProps<{
     transactions: Paginated<Transaction>;
@@ -29,6 +30,8 @@ const formatDate = (dateString: string) => {
     }).format(new Date(dateString));
 };
 
+const { t } = useI18n();
+
 const transactionDetails = (transaction: Transaction) => {
     const isSender = transaction.sender.id === currentUser.id;
     const isCompleted = transaction.status === 'completed';
@@ -37,7 +40,7 @@ const transactionDetails = (transaction: Transaction) => {
         return {
             icon: isCompleted ? ArrowUpCircleIcon : XCircleIcon,
             iconClass: isCompleted ? 'text-red-500' : 'text-gray-500',
-            title: i18n.global.t('dashboard.sent_to', {
+            title: t('dashboard.sent_to', {
                 name: transaction.receiver.name,
             }),
             amount: `-${formatCurrency(
@@ -49,7 +52,7 @@ const transactionDetails = (transaction: Transaction) => {
         return {
             icon: isCompleted ? ArrowDownCircleIcon : XCircleIcon,
             iconClass: isCompleted ? 'text-green-500' : 'text-gray-500',
-            title: i18n.global.t('dashboard.received_from', {
+            title: t('dashboard.received_from', {
                 name: transaction.sender.name,
             }),
             amount: `+${formatCurrency(transaction.amount)}`,
@@ -59,27 +62,32 @@ const transactionDetails = (transaction: Transaction) => {
 };
 </script>
 
-<script lang="ts">
-import { i18n } from '@/i18n';
-</script>
-
 <template>
     <div class="space-y-4">
         <h3 class="text-lg font-medium text-gray-900">
             {{ $t('dashboard.transaction_history') }}
         </h3>
         <div class="space-y-3">
-            <div v-if="transactions.data.length === 0"
-                class="rounded-md bg-gray-50 p-4 text-center text-sm text-gray-500">
+            <div
+                v-if="transactions.data.length === 0"
+                class="rounded-md bg-gray-50 p-4 text-center text-sm text-gray-500"
+            >
                 {{ $t('dashboard.no_transactions') }}
             </div>
-            <div v-for="transaction in transactions.data" :key="transaction.reference_id" data-testid="transaction-item"
-                class="flex items-center justify-between rounded-md border bg-white p-3">
+            <div
+                v-for="transaction in transactions.data"
+                :key="transaction.reference_id"
+                data-testid="transaction-item"
+                class="flex items-center justify-between rounded-md border bg-white p-3"
+            >
                 <!-- Call transactionDetails once and store the result -->
                 <template v-if="transactionDetails(transaction)">
                     <div class="flex items-center gap-3">
-                        <component :is="transactionDetails(transaction).icon" class="h-8 w-8"
-                            :class="transactionDetails(transaction).iconClass" />
+                        <component
+                            :is="transactionDetails(transaction).icon"
+                            class="h-8 w-8"
+                            :class="transactionDetails(transaction).iconClass"
+                        />
                         <div>
                             <p class="font-semibold text-gray-800">
                                 {{ transactionDetails(transaction).title }}
@@ -89,7 +97,10 @@ import { i18n } from '@/i18n';
                             </p>
                         </div>
                     </div>
-                    <p class="font-mono text-lg font-semibold" :class="transactionDetails(transaction).amountClass">
+                    <p
+                        class="font-mono text-lg font-semibold"
+                        :class="transactionDetails(transaction).amountClass"
+                    >
                         {{ transactionDetails(transaction).amount }}
                     </p>
                 </template>
