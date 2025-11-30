@@ -57,9 +57,7 @@ describe('TransferForm.vue', () => {
         await flushPromises();
 
         // 4. Assert the errors are visible
-        const emailError = wrapper.find(
-            '[data-testid="receiver-email-error"]',
-        );
+        const emailError = wrapper.find('[data-testid="receiver-email-error"]');
         const amountError = wrapper.find('[data-testid="amount-error"]');
 
         expect(emailError.exists()).toBe(true);
