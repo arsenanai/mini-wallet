@@ -55,7 +55,7 @@ describe('TransactionHistory.vue', () => {
             JSON.stringify(mockTransactionsTemplate),
         );
         transactions.data.push({
-            id: 1,
+            id: 'uuid-1',
             reference_id: 'test-ref',
             amount: 100,
             commission_fee: 1.5,
@@ -88,7 +88,7 @@ describe('TransactionHistory.vue', () => {
             JSON.stringify(mockTransactionsTemplate),
         );
         transactions.data.push({
-            id: 1,
+            id: 'uuid-outgoing',
             reference_id: 'test-ref-outgoing',
             amount: 100,
             commission_fee: 1.5,
@@ -113,7 +113,7 @@ describe('TransactionHistory.vue', () => {
             JSON.stringify(mockTransactionsTemplate),
         );
         transactions.data.push({
-            id: 1,
+            id: 'uuid-incoming',
             reference_id: 'test-ref-incoming',
             amount: 50,
             commission_fee: 0, // Commission is on sender side

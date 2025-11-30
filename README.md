@@ -98,7 +98,7 @@ This will create all necessary tables and populate the database with a central c
 ```bash
 php artisan migrate:fresh --seed
 ```
-> **Note:** The default password for all seeded users is `password`.
+> **Note:** The default password for all seeded users is `password`. You can log in with `user_a@email.com` and `user_b@email.com` to test transfers.
 
 **6. Build Frontend Assets**
 Compile the frontend assets for production.

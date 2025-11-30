@@ -17,7 +17,7 @@ const otherUser: User = {
 };
 
 const initialTransaction: Transaction = {
-    id: 1,
+    id: 'uuid-initial',
     reference_id: 'initial-ref',
     amount: 50,
     commission_fee: 0,
@@ -116,7 +116,7 @@ describe('Dashboard.vue', () => {
         } = {
             balance: 950.5,
             transaction: {
-                id: 2,
+                id: 'uuid-new',
                 reference_id: 'new-ref',
                 amount: 48,
                 commission_fee: 1.5,

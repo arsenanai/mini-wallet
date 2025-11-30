@@ -19,9 +19,10 @@ Before you begin, ensure your local development environment is fully running:
 
 4. Prepare Test Users:
    - Your database should be seeded with users.
-   - Identify two users from your database to act as the sender and receiver.
-   - User A (Sender): Note their email and password.
-   - User B (Receiver): Note their email and password.
+   - The seeder creates two specific users perfect for testing:
+     - User A (Sender): `user_a@email.com`
+     - User B (Receiver): `user_b@email.com`
+   - The password for all seeded users is `password`.
 
 --------------------------------------------------
 2. Test Scenarios

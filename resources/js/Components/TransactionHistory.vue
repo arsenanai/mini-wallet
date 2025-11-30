@@ -69,39 +69,30 @@ import { i18n } from '@/i18n';
             {{ $t('dashboard.transaction_history') }}
         </h3>
         <div class="space-y-3">
-            <div
-                v-if="transactions.data.length === 0"
-                class="rounded-md bg-gray-50 p-4 text-center text-sm text-gray-500"
-            >
+            <div v-if="transactions.data.length === 0"
+                class="rounded-md bg-gray-50 p-4 text-center text-sm text-gray-500">
                 {{ $t('dashboard.no_transactions') }}
             </div>
-            <div
-                v-for="transaction in transactions.data"
-                :key="transaction.id"
-                data-testid="transaction-item"
-                class="flex items-center justify-between rounded-md border bg-white p-3"
-            >
-                <div class="flex items-center gap-3">
-                    <component
-                        :is="transactionDetails(transaction).icon"
-                        class="h-8 w-8"
-                        :class="transactionDetails(transaction).iconClass"
-                    />
-                    <div>
-                        <p class="font-semibold text-gray-800">
-                            {{ transactionDetails(transaction).title }}
-                        </p>
-                        <p class="text-sm text-gray-500">
-                            {{ formatDate(transaction.created_at) }}
-                        </p>
+            <div v-for="transaction in transactions.data" :key="transaction.reference_id" data-testid="transaction-item"
+                class="flex items-center justify-between rounded-md border bg-white p-3">
+                <!-- Call transactionDetails once and store the result -->
+                <template v-if="transactionDetails(transaction)">
+                    <div class="flex items-center gap-3">
+                        <component :is="transactionDetails(transaction).icon" class="h-8 w-8"
+                            :class="transactionDetails(transaction).iconClass" />
+                        <div>
+                            <p class="font-semibold text-gray-800">
+                                {{ transactionDetails(transaction).title }}
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                {{ formatDate(transaction.created_at) }}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <p
-                    class="font-mono text-lg font-semibold"
-                    :class="transactionDetails(transaction).amountClass"
-                >
-                    {{ transactionDetails(transaction).amount }}
-                </p>
+                    <p class="font-mono text-lg font-semibold" :class="transactionDetails(transaction).amountClass">
+                        {{ transactionDetails(transaction).amount }}
+                    </p>
+                </template>
             </div>
         </div>
         <!-- Pagination links will be added later if needed -->

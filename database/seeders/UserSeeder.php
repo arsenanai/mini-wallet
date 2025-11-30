@@ -25,7 +25,15 @@ class UserSeeder extends Seeder
 
         Log::info('UserSeeder: Creating 100 sample users...');
         try {
-            User::factory(100)->create();
+            User::factory()->create([
+                'name'     => 'User A',
+                'email'    => 'user_a@email.com',
+            ]);
+            User::factory()->create([
+                'name'     => 'User B',
+                'email'    => 'user_b@email.com',
+            ]);
+            User::factory(98)->create(); 
             Log::info('UserSeeder: 100 sample users created successfully.');
         } catch (\Exception $e) {
             Log::error('UserSeeder: Failed to create sample users. Error: ' . $e->getMessage());

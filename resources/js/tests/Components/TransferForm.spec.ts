@@ -1,77 +1,94 @@
 import TransferForm from '@/Components/TransferForm.vue';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { reactive } from 'vue';
 
-// A reactive object to simulate the form state from useForm.
-// Using `reactive` is more robust for nested objects like `errors`.
-const mockFormState = reactive({
-    recipient_email: '' as string,
-    amount: null as number | null,
-    errors: {} as Record<string, string>,
-    processing: false,
-    recentlySuccessful: false,
-    post: vi.fn(),
-    reset: vi.fn(),
-});
-
-// Mock the useForm() composable from Inertia.js
-vi.mock('@inertiajs/vue3', async (importOriginal) => {
-    const original = await importOriginal<typeof import('@inertiajs/vue3')>();
-    return {
-        ...original,
-        useForm: () => mockFormState,
-    };
-});
+// Mock axios
+const mockAxiosPost = vi.fn();
+window.axios = {
+    post: mockAxiosPost,
+} as any;
 
 describe('TransferForm.vue', () => {
-    // Reset the mock state before each test
     beforeEach(() => {
-        mockFormState.errors = {};
-        mockFormState.processing = false;
-        mockFormState.recentlySuccessful = false;
-        mockFormState.post.mockClear();
-        mockFormState.reset.mockClear();
+        mockAxiosPost.mockClear();
+        vi.useFakeTimers();
     });
 
     it('displays validation errors for email and amount fields', async () => {
-        const wrapper = mount(TransferForm);
+        mockAxiosPost.mockRejectedValue({
+            response: {
+                status: 422,
+                data: {
+                    errors: {
+                        recipient_email: ['The recipient email is invalid.'],
+                        amount: ['The amount must be a positive number.'],
+                    },
+                },
+            },
+        });
+        const wrapper = mount(TransferForm, {
+            global: {
+                mocks: {
+                    $t: (key: string) => key,
+                },
+            },
+        });
 
-        // Simulate receiving validation errors
-        mockFormState.errors = {
-            recipient_email: 'The recipient email is invalid.',
-            amount: 'The amount must be a positive number.',
-        };
-
+        await wrapper.find('form').trigger('submit.prevent');
         await wrapper.vm.$nextTick();
 
         const text = wrapper.text();
         expect(text).toContain('The recipient email is invalid.');
         expect(text).toContain('The amount must be a positive number.');
+        expect(mockAxiosPost).toHaveBeenCalledTimes(1);
     });
 
     it('disables the submit button while the form is processing', async () => {
-        const wrapper = mount(TransferForm);
+        // Make the promise never resolve to keep it in a processing state
+        mockAxiosPost.mockReturnValue(new Promise(() => {}));
 
-        // Simulate form processing
-        mockFormState.processing = true;
+        const wrapper = mount(TransferForm, {
+            global: {
+                mocks: {
+                    $t: (key: string) => key,
+                },
+            },
+        });
 
+        await wrapper.find('form').trigger('submit.prevent');
         await wrapper.vm.$nextTick();
 
         const button = wrapper.find('button[type="submit"]');
         expect(button.attributes('disabled')).toBeDefined();
+        expect(mockAxiosPost).toHaveBeenCalledTimes(1);
     });
 
     it('resets the form and shows a success message upon a successful API response', async () => {
-        // Mock the form.post to immediately call onSuccess
-        mockFormState.post.mockImplementation((_url, options) => {
-            if (options.onSuccess) {
-                options.onSuccess();
-            }
-            mockFormState.recentlySuccessful = true;
+        mockAxiosPost.mockResolvedValue({ status: 201, data: {} });
+
+        const wrapper = mount(TransferForm, {
+            global: {
+                mocks: {
+                    $t: (key: string) => {
+                        // Provide a specific translation for the success message
+                        if (key === 'dashboard.transfer_successful') {
+                            return 'Transfer successful!';
+                        }
+                        return key; // Return other keys as-is
+                    },
+                },
+            },
         });
 
-        const wrapper = mount(TransferForm);
+        const emailInput = wrapper.find<HTMLInputElement>(
+            'input[type="email"]',
+        );
+        const amountInput = wrapper.find<HTMLInputElement>(
+            'input[type="number"]',
+        );
+
+        await emailInput.setValue('test@test.com');
+        await amountInput.setValue('100');
 
         // Find and submit the form
         await wrapper.find('form').trigger('submit.prevent');
@@ -81,7 +98,13 @@ describe('TransferForm.vue', () => {
         // Check that the success message is visible
         expect(wrapper.text()).toContain('Transfer successful!');
 
-        // Check that the form's reset method was called
-        expect(mockFormState.reset).toHaveBeenCalled();
+        // Check that the form fields were reset
+        expect(emailInput.element.value).toBe('');
+        expect(amountInput.element.value).toBe('');
+
+        // Fast-forward time to check if the success message disappears
+        await vi.advanceTimersByTimeAsync(2000);
+        await wrapper.vm.$nextTick();
+        expect(wrapper.text()).not.toContain('Transfer successful!');
     });
 });

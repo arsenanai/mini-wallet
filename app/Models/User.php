@@ -8,6 +8,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
@@ -59,5 +60,17 @@ class User extends Authenticatable
     public function receivedTransactions(): HasMany
     {
         return $this->hasMany(Transaction::class, 'receiver_id');
+    }
+
+    /**
+     * Get all transactions where the user is either the sender or the receiver.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function transactions(): Builder
+    {
+        return Transaction::where(function (Builder $query) {
+            $query->where('sender_id', $this->id)->orWhere('receiver_id', $this->id);
+        });
     }
 }

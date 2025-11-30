@@ -7,6 +7,7 @@ namespace Tests\Feature;
 use App\Events\TransactionCompleted;
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Event;
 
 beforeEach(function () {
@@ -38,7 +39,7 @@ test('a user can successfully make a transfer', function () {
     $response
         ->assertStatus(201)
         ->assertJson([
-            'message' => __('messages.transfer_successful'),
+            'message' => trans('messages.transaction_successful'),
         ])
         ->assertJsonStructure([
             'message',
@@ -80,7 +81,7 @@ test('a transfer fails due to insufficient funds', function () {
     $response
         ->assertStatus(422) // Unprocessable Entity
         ->assertJson([
-            'message' => 'Sender has insufficient funds.',
+            'message' => __('messages.insufficient_funds'),
         ]);
 
     // Assert: Ensure balances have not changed

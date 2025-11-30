@@ -6,7 +6,7 @@ export interface User {
 }
 
 export interface Transaction {
-    id: number;
+    id: string; // This is a UUID from the API response
     reference_id: string;
     amount: number;
     commission_fee: number;

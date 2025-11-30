@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\InsufficientFundsException;
 use App\Http\Requests\TransferRequest;
+use App\Http\Resources\TransactionResource;
 use App\Services\TransactionService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
@@ -16,26 +16,24 @@ class TransactionController extends Controller
     {
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $data = $this->transactionService->getTransactionHistory(Auth::user());
+        $user = $request->user();
+        $history = $this->transactionService->getTransactionHistory($user);
 
-        return response()->json($data);
+        return response()->json($history);
     }
 
     public function store(TransferRequest $request): JsonResponse
     {
-        $validated = $request->validated();
+        $sender = $request->user();
+        $validatedData = $request->validated();
 
-        try {
-            $transaction = $this->transactionService->createTransfer(Auth::user(), $validated['receiver_email'], (float) $validated['amount']);
+        $transaction = $this->transactionService->createTransfer($sender, $validatedData['receiver_email'], (float) $validatedData['amount']);
 
-            return response()->json([
-                'message'     => __('messages.transfer_successful'),
-                'transaction' => $transaction,
-            ], 201);
-        } catch (InsufficientFundsException $e) {
-            return response()->json([ 'message' => $e->getMessage() ], 422);
-        }
+        return response()->json([
+            'message' => __('messages.transaction_successful'),
+            'transaction' => new TransactionResource($transaction),
+        ], 201);
     }
 }
