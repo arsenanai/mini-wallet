@@ -1,5 +1,11 @@
 <?php
 
+use Tests\TestCase;
+
+uses(
+    Tests\DuskTestCase::class
+)->in('Browser', 'Dusk');
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -12,8 +18,8 @@
 */
 
 uses(
-    Tests\TestCase::class,
-    Illuminate\Foundation\Testing\RefreshDatabase::class,
+    TestCase::class, // Base test case for Feature and Unit tests
+    Illuminate\Foundation\Testing\RefreshDatabase::class // Trait to refresh the database
 )->in('Feature', 'Unit');
 
 /*
@@ -27,7 +33,7 @@ uses(
 |
 */
 
-expect()->extend('toBeOne', function () {
+expect()->extend('toBeOne', function (): Pest\Expectation {
     return $this->toBe(1);
 });
 
@@ -44,5 +50,5 @@ expect()->extend('toBeOne', function () {
 
 function something()
 {
-    // ..
+    //
 }

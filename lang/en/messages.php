@@ -31,4 +31,5 @@ return [
     'recipient_email' => 'Recipient Email',
     'amount' => 'Amount',
     'send' => 'Send',
+    "The amount must be greater than 0." => "The amount must be greater than 0."
 ];

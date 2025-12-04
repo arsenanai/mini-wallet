@@ -3,7 +3,7 @@ import Balance from '@/Components/Balance.vue';
 import TransactionHistory from '@/Components/TransactionHistory.vue';
 import TransferForm from '@/Components/TransferForm.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { User } from '@/types';
+import { Paginated, Transaction, User } from '@/types';
 import { DashboardDataResponse } from '@/types/api';
 import { Head, usePage } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, ref } from 'vue';
@@ -14,16 +14,39 @@ const user = usePage().props.auth.user as User;
 
 // Create local reactive state from props to allow dynamic updates
 const localBalance = ref(props.balance);
-const localTransactions = ref(props.transactions);
+const localTransactions = ref<Paginated<Transaction>>(props.transactions);
+
+const handleTransferSuccess = (data: {
+    balance: string;
+    transaction: Transaction;
+}) => {
+    localBalance.value = data.balance;
+    localTransactions.value.data.unshift(data.transaction);
+};
 
 onMounted(() => {
-    window.Echo.private(`App.Models.User.${user.id}`).listen(
-        'TransactionCompleted',
-        (event: { balance: number; transaction: Transaction }) => {
-            // Update balance with the new value from the event
-            localBalance.value = event.balance;
-            // Add the new transaction to the top of the list
-            localTransactions.value.data.unshift(event.transaction);
+    const channel = window.Echo.private(`App.Models.User.${user.id}`);
+
+    // --- REAL-TIME DEBUGGING ---
+    console.log(
+        `[Echo] Subscribing to private channel: App.Models.User.${user.id}`,
+    );
+
+    channel.on('pusher:subscription_succeeded', () => {
+        console.log('[Echo] Successfully subscribed to the private channel!');
+    });
+
+    channel.on('pusher:subscription_error', (status: number) => {
+        console.error(
+            `[Echo] Failed to subscribe to private channel with status: ${status}`,
+        );
+    });
+    // --- END DEBUGGING ---
+
+    channel.listen(
+        '.TransactionCompleted', // Note: It's good practice to prefix the event name with a dot
+        async (event: { balance: string; transaction: Transaction }) => {
+            handleTransferSuccess(event);
         },
     );
 });
@@ -52,7 +75,9 @@ onUnmounted(() => {
                     </div>
                     <!-- TransferForm Component will go here -->
                     <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <TransferForm />
+                        <TransferForm
+                            @transfer-successful="handleTransferSuccess"
+                        />
                     </div>
                 </div>
                 <!-- TransactionHistory Component will go here -->

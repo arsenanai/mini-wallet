@@ -31,8 +31,12 @@ class TransactionController extends Controller
 
         $transaction = $this->transactionService->createTransfer($sender, $validatedData['receiver_email'], (float) $validatedData['amount']);
 
+        // Eager-load the relationships so they are included in the API resource.
+        $transaction->load(['sender', 'receiver']);
+
         return response()->json([
             'message' => __('messages.transaction_successful'),
+            'balance' => (string) $sender->balance,
             'transaction' => new TransactionResource($transaction),
         ], 201);
     }

@@ -13,6 +13,12 @@ use App\Models\User;
 use App\Services\TransactionService;
 use Illuminate\Support\Facades\Event;
 
+/**
+ * @property-read \Illuminate\Contracts\Foundation\Application $app
+ * @property TransactionService $transactionService
+ * @property User $commissionAccount
+ */
+
 beforeEach(function () {
     // Mock the service class we are about to create
     $this->transactionService = $this->app->make(TransactionService::class);
@@ -65,20 +71,30 @@ test('it successfully creates a transfer and updates balances', function () {
     Event::assertDispatched(fn (TransactionCompleted $event) => $event->broadcastOn()[0]->name === 'private-App.Models.User.' . $receiver->id);
 });
 
-test('it throws exception and creates failed transaction for insufficient funds', function () {
+test('it throws exception for insufficient funds', function () {
     // Arrange
     $sender   = User::factory()->create([ 'balance' => 50.00 ]);
     $receiver = User::factory()->create([ 'balance' => 50.00 ]);
     $amount   = 100.00;
 
-    // Assert
-    // Expect an InsufficientFundsException to be thrown
-    $this->expectException(InsufficientFundsException::class);
-
     // Act
     $this->transactionService->createTransfer($sender, $receiver->email, $amount);
+})->throws(InsufficientFundsException::class);
 
-    // Assertions after the action (these won't be reached, but are good for clarity)
+test('it creates a failed transaction record for insufficient funds', function () {
+    // Arrange
+    $sender   = User::factory()->create([ 'balance' => 50.00 ]);
+    $receiver = User::factory()->create([ 'balance' => 50.00 ]);
+    $amount   = 100.00;
+
+    // Act
+    try {
+        $this->transactionService->createTransfer($sender, $receiver->email, $amount);
+    } catch (InsufficientFundsException) {
+        // Expected
+    }
+
+    // Assert
     // 1. Balances should not have changed
     expect($sender->refresh()->balance)->toEqual(50.00);
     expect($receiver->refresh()->balance)->toEqual(50.00);

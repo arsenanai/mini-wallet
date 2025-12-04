@@ -1,0 +1,20 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    bootstrapFiles:
+        - ./vendor/nunomaduro/larastan/bootstrap.php
+    paths:
+        - app/
+        - routes/
+        - tests/
+
+    # Level 9 is the highest level of strictness.
+    # Start with a lower level (e.g., 5) and increase it as you fix errors.
+    level: 5
+
+#    excludePaths:
+#        - ./*/*/FileToBeExcluded.php
+
+#    ignoreErrors:
+#        - '#PHPDoc tag @var in file .* is not valid\.#'

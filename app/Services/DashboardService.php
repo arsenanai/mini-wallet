@@ -19,11 +19,12 @@ class DashboardService
         $user = $user ?? Auth::user();
 
         $transactions = $user->transactions()
+            ->with(['sender', 'receiver']) // Eager-load relationships
             ->latest()
             ->paginate(15);
 
         return [
-            'balance' => (float) $user->balance,
+            'balance' => (string) $user->balance,
             'transactions' => TransactionResource::collection($transactions),
         ];
     }

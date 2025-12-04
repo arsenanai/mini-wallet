@@ -30,6 +30,7 @@ class TransactionFactory extends Factory
             'status'         => TransactionStatus::COMPLETED,
             'type'           => TransactionType::TRANSFER,
             'reference_id'   => Str::uuid(),
+            'created_at'     => now(),
         ];
     }
 }

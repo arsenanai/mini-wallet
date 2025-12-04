@@ -3,15 +3,21 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { TransferRequestPayload } from '@/types/api';
-import { isAxiosError, type AxiosError } from 'axios';
+import { TransferRequestPayload, TransferSuccessResponse } from '@/types/api';
+import { AxiosError, isAxiosError } from 'axios';
 import { ref, watch } from 'vue';
-import { route } from '../../../vendor/tightenco/ziggy';
+import { useI18n } from 'vue-i18n';
+
+const emit = defineEmits<{
+    (e: 'transfer-successful', data: TransferSuccessResponse): void;
+}>();
 
 const form = ref<TransferRequestPayload>({
     receiver_email: '',
-    amount: 0,
+    amount: null,
 });
+
+const { t } = useI18n();
 
 const errors = ref({
     receiver_email: '',
@@ -30,24 +36,38 @@ watch(recentlySuccessful, (isSuccessful) => {
     }
 });
 
+// Frontend validation for the amount field for instant user feedback.
+watch(
+    () => form.value.amount,
+    (newAmount) => {
+        if (newAmount !== null && newAmount <= 0) {
+            errors.value.amount = t('The amount must be greater than 0.');
+        } else if (
+            errors.value.amount === t('The amount must be greater than 0.')
+        ) {
+            errors.value.amount = ''; // Clear the error if the amount becomes valid
+        }
+    },
+);
+
 const submit = async () => {
     processing.value = true;
     recentlySuccessful.value = false;
     errors.value = { receiver_email: '', amount: '', general: '' };
 
     try {
-        await window.axios.post(route('api.transactions.store'), form.value);
+        const response = await window.axios.post<TransferSuccessResponse>(
+            route('api.transactions.store'),
+            form.value,
+        );
+
+        // Emit the successful transfer data to the parent component
+        emit('transfer-successful', response.data);
+
         form.value.receiver_email = '';
         form.value.amount = null;
         recentlySuccessful.value = true;
     } catch (error) {
-        // --- TEMPORARY DEBUGGING ---
-        console.error(
-            '[TransferForm.vue] An error occurred during submit:',
-            error,
-        );
-        // --- END DEBUGGING ---
-
         if (
             isAxiosError(error) &&
             error.response &&
@@ -58,18 +78,19 @@ const submit = async () => {
                 errors: Record<string, string[]>;
             }>;
             const responseData = axiosError.response?.data;
-            if (responseData.errors) {
-                const serverErrors = responseData.errors;
-                // The API sends 'receiver_email', not 'recipient_email'.
-                if (serverErrors.receiver_email) {
-                    errors.value.receiver_email =
-                        serverErrors.receiver_email[0];
+            if (responseData) {
+                if (responseData.errors) {
+                    const serverErrors = responseData.errors;
+                    if (serverErrors.receiver_email) {
+                        errors.value.receiver_email =
+                            serverErrors.receiver_email[0];
+                    }
+                    if (serverErrors.amount) {
+                        errors.value.amount = serverErrors.amount[0];
+                    }
+                } else if (responseData.message) {
+                    errors.value.general = responseData.message;
                 }
-                if (serverErrors.amount) {
-                    errors.value.amount = serverErrors.amount[0];
-                }
-            } else if (responseData.message) {
-                errors.value.general = responseData.message;
             }
         }
     } finally {
@@ -83,7 +104,12 @@ const submit = async () => {
         <h3 class="text-lg font-medium text-gray-900">
             {{ $t('dashboard.send_money') }}
         </h3>
-        <form class="space-y-6" @submit.prevent="submit">
+        <form
+            class="space-y-6"
+            dusk="transfer-form"
+            novalidate
+            @submit.prevent="submit"
+        >
             <div>
                 <InputLabel
                     for="receiver_email"
@@ -123,7 +149,7 @@ const submit = async () => {
             </div>
 
             <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="processing">
+                <PrimaryButton :disabled="processing" dusk="send-money-button">
                     {{ $t('dashboard.send_money') }}
                 </PrimaryButton>
 

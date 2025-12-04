@@ -1,7 +1,7 @@
 import TransactionHistory from '@/Components/TransactionHistory.vue';
 import { Paginated, Transaction, User } from '@/types';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 const currentUser: User = {
     id: 1,
@@ -30,19 +30,6 @@ const mockTransactionsTemplate: Paginated<Transaction> = {
     },
 };
 
-// Mock the usePage() composable from Inertia.js
-vi.mock('@inertiajs/vue3', async (importOriginal) => {
-    const original = await importOriginal<typeof import('@inertiajs/vue3')>();
-    return {
-        ...original,
-        usePage: () => ({
-            props: {
-                auth: { user: currentUser },
-            },
-        }),
-    };
-});
-
 describe('TransactionHistory.vue', () => {
     it('correctly formats a date string into a readable format', () => {
         const transactions = JSON.parse(
@@ -62,6 +49,13 @@ describe('TransactionHistory.vue', () => {
 
         const wrapper = mount(TransactionHistory, {
             props: { transactions },
+            global: {
+                mocks: {
+                    // Provide a mock that handles placeholder replacement
+                    $t: (key: string, values: Record<string, string>) =>
+                        key.replace('{name}', values.name),
+                },
+            },
         });
 
         // Note: The exact output depends on the test runner's timezone.
@@ -72,6 +66,11 @@ describe('TransactionHistory.vue', () => {
     it('displays a "No transactions yet" message when the transaction list is empty', () => {
         const wrapper = mount(TransactionHistory, {
             props: { transactions: mockTransactionsTemplate },
+            global: {
+                mocks: {
+                    $t: (key: string) => key,
+                },
+            },
         });
 
         expect(wrapper.text()).toContain('No transactions yet.');
@@ -95,6 +94,12 @@ describe('TransactionHistory.vue', () => {
 
         const wrapper = mount(TransactionHistory, {
             props: { transactions },
+            global: {
+                mocks: {
+                    $t: (key: string, values: Record<string, string>) =>
+                        key.replace('{name}', values.name),
+                },
+            },
         });
 
         expect(wrapper.text()).toContain('Sent to Other User');
@@ -120,6 +125,12 @@ describe('TransactionHistory.vue', () => {
 
         const wrapper = mount(TransactionHistory, {
             props: { transactions },
+            global: {
+                mocks: {
+                    $t: (key: string, values: Record<string, string>) =>
+                        key.replace('{name}', values.name),
+                },
+            },
         });
 
         expect(wrapper.text()).toContain('Received from Other User');

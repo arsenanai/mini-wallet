@@ -19,9 +19,7 @@ class TransactionService
     /**
      * Retrieves the transaction history and current balance for a given user.
      *
-     * @param User $user
-     *
-     * @return array{balance: string, transactions: \Illuminate\Contracts\Pagination\LengthAwarePaginator}
+     * @return array{balance: string, transactions: array<mixed>}
      */
     public function getTransactionHistory(User $user): array
     {
@@ -41,7 +39,6 @@ class TransactionService
      * Creates a transfer between two users.
      *
      * @param User $sender
-     * @param User $receiver
      * @param float $amount
      *
      * @return Transaction

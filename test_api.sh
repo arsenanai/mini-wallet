@@ -17,7 +17,7 @@
 
 # Get the directory where the script is located to save output.txt there.
 SCRIPT_DIR=$(dirname "$0")
-OUTPUT_FILE="$SCRIPT_DIR/api-output.txt"
+OUTPUT_FILE="$SCRIPT_DIR/test-output-api.txt"
 
 # Redirect all stdout and stderr to the output file.
 exec &> "$OUTPUT_FILE"
@@ -54,7 +54,7 @@ curl -v -c "$COOKIE_JAR" -b "$COOKIE_JAR" \
 -H "Accept: application/json" \
 -H "X-XSRF-TOKEN: $XSRF_TOKEN" \
 -H "Referer: $BASE_URL" \
--X POST "$BASE_URL/api/login" \
+-X POST "$BASE_URL/login" \
 -d '{
   "email": "'"$SENDER_EMAIL"'",
   "password": "'"$SENDER_PASSWORD"'"

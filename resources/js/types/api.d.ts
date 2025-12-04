@@ -1,11 +1,11 @@
-import { Transaction } from './';
+import { Paginated, Transaction } from './';
 
 /**
  * API Contract for POST /api/transactions
  */
 export interface TransferRequestPayload {
     receiver_email: string;
-    amount: number;
+    amount: number | null;
 }
 
 export interface TransferSuccessResponse {
@@ -26,6 +26,6 @@ export interface ValidationErrorResponse {
  * API Contract for GET /api/transactions
  */
 export interface DashboardDataResponse {
-    balance: string; // Backend sends monetary values as strings
+    balance: string;
     transactions: Paginated<Transaction>;
 }

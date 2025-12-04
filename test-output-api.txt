@@ -1,0 +1,624 @@
+===== Mini Wallet API Test Script =====
+Start Time: Mon Dec  1 12:07:44 +05 2025
+=======================================
+
+
+----- [Step 1] Getting CSRF Cookie -----
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:8000...
+* Connected to 127.0.0.1 (127.0.0.1) port 8000
+> GET /sanctum/csrf-cookie HTTP/1.1
+> Host: 127.0.0.1:8000
+> User-Agent: curl/8.7.1
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 204 No Content
+< Host: 127.0.0.1:8000
+< Connection: close
+< X-Powered-By: PHP/8.4.14
+< Cache-Control: no-cache, private
+< Date: Mon, 01 Dec 2025 07:07:44 GMT
+< Vary: X-Inertia
+< Access-Control-Allow-Origin: *
+* Added cookie XSRF-TOKEN="eyJpdiI6IjdydHVldkRSVFRuS1BYY3ZxeWlDTVE9PSIsInZhbHVlIjoiR1U3Nm8wdytRdzR4OGhmWEY5NE5ObWdack1EMUhxTGlRL00zL1Z3R0JNNW9nVHUrYm5PdkdLRVBhS29tOWxNWjRTZlFFK3djQ2lQZERwZ1ViWkxHRnJqc2FETUhxUkFhNDFSMEJpRE1uZTB0Y1FqRjVGc0VlaVpLSWVzd0V1aloiLCJtYWMiOiIwMmQ5ZGFmZmI4MTgxYTgwZDBkODJkZTY1YjIwNTUxNjU4ODI4OThlNmU2ZTljNDU2M2Q0ZTE1OWEyMjhkMGIzIiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: XSRF-TOKEN=eyJpdiI6IjdydHVldkRSVFRuS1BYY3ZxeWlDTVE9PSIsInZhbHVlIjoiR1U3Nm8wdytRdzR4OGhmWEY5NE5ObWdack1EMUhxTGlRL00zL1Z3R0JNNW9nVHUrYm5PdkdLRVBhS29tOWxNWjRTZlFFK3djQ2lQZERwZ1ViWkxHRnJqc2FETUhxUkFhNDFSMEJpRE1uZTB0Y1FqRjVGc0VlaVpLSWVzd0V1aloiLCJtYWMiOiIwMmQ5ZGFmZmI4MTgxYTgwZDBkODJkZTY1YjIwNTUxNjU4ODI4OThlNmU2ZTljNDU2M2Q0ZTE1OWEyMjhkMGIzIiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; samesite=lax
+* Added cookie wallet-app-session="eyJpdiI6Img3VklBbW1MVW1qcGNuUjVkUFhvTVE9PSIsInZhbHVlIjoiT3UyMVVVby94QUVTMkpCV2VmYzlKa09rOXV2ckVPZGJzWVIyc0RGTHY3VE9GOWk5ZzM2NldqYVlxS09Oa0RYT3VWcDlXbnV4RnVTTGpUWWplZTFjeUlwUGVMMXFTQVFXcFgvSmJpZFNZcWtURzhyejlNVVRGY2VxOTRWVlpPUDgiLCJtYWMiOiJiMjE5YzA5MzU2ZmRjZGU2NGMwMmViMjFjYjk4ZWNmMTI3NmFjZWQ5N2RiMjQxY2M2Yzk0N2IyNTQ3NTQ0OTdlIiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: wallet-app-session=eyJpdiI6Img3VklBbW1MVW1qcGNuUjVkUFhvTVE9PSIsInZhbHVlIjoiT3UyMVVVby94QUVTMkpCV2VmYzlKa09rOXV2ckVPZGJzWVIyc0RGTHY3VE9GOWk5ZzM2NldqYVlxS09Oa0RYT3VWcDlXbnV4RnVTTGpUWWplZTFjeUlwUGVMMXFTQVFXcFgvSmJpZFNZcWtURzhyejlNVVRGY2VxOTRWVlpPUDgiLCJtYWMiOiJiMjE5YzA5MzU2ZmRjZGU2NGMwMmViMjFjYjk4ZWNmMTI3NmFjZWQ5N2RiMjQxY2M2Yzk0N2IyNTQ3NTQ0OTdlIiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+< 
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+* Closing connection
+
+----- [Step 1] Complete -----
+
+
+----- [Step 2] Authenticating as Sender (user_a@email.com) -----
+Note: Unnecessary use of -X or --request, POST is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:8000...
+* Connected to 127.0.0.1 (127.0.0.1) port 8000
+> POST /login HTTP/1.1
+> Host: 127.0.0.1:8000
+> User-Agent: curl/8.7.1
+> Cookie: wallet-app-session=eyJpdiI6Img3VklBbW1MVW1qcGNuUjVkUFhvTVE9PSIsInZhbHVlIjoiT3UyMVVVby94QUVTMkpCV2VmYzlKa09rOXV2ckVPZGJzWVIyc0RGTHY3VE9GOWk5ZzM2NldqYVlxS09Oa0RYT3VWcDlXbnV4RnVTTGpUWWplZTFjeUlwUGVMMXFTQVFXcFgvSmJpZFNZcWtURzhyejlNVVRGY2VxOTRWVlpPUDgiLCJtYWMiOiJiMjE5YzA5MzU2ZmRjZGU2NGMwMmViMjFjYjk4ZWNmMTI3NmFjZWQ5N2RiMjQxY2M2Yzk0N2IyNTQ3NTQ0OTdlIiwidGFnIjoiIn0%3D; XSRF-TOKEN=eyJpdiI6IjdydHVldkRSVFRuS1BYY3ZxeWlDTVE9PSIsInZhbHVlIjoiR1U3Nm8wdytRdzR4OGhmWEY5NE5ObWdack1EMUhxTGlRL00zL1Z3R0JNNW9nVHUrYm5PdkdLRVBhS29tOWxNWjRTZlFFK3djQ2lQZERwZ1ViWkxHRnJqc2FETUhxUkFhNDFSMEJpRE1uZTB0Y1FqRjVGc0VlaVpLSWVzd0V1aloiLCJtYWMiOiIwMmQ5ZGFmZmI4MTgxYTgwZDBkODJkZTY1YjIwNTUxNjU4ODI4OThlNmU2ZTljNDU2M2Q0ZTE1OWEyMjhkMGIzIiwidGFnIjoiIn0%3D
+> Content-Type: application/json
+> Accept: application/json
+> X-XSRF-TOKEN: eyJpdiI6IjdydHVldkRSVFRuS1BYY3ZxeWlDTVE9PSIsInZhbHVlIjoiR1U3Nm8wdytRdzR4OGhmWEY5NE5ObWdack1EMUhxTGlRL00zL1Z3R0JNNW9nVHUrYm5PdkdLRVBhS29tOWxNWjRTZlFFK3djQ2lQZERwZ1ViWkxHRnJqc2FETUhxUkFhNDFSMEJpRE1uZTB0Y1FqRjVGc0VlaVpLSWVzd0V1aloiLCJtYWMiOiIwMmQ5ZGFmZmI4MTgxYTgwZDBkODJkZTY1YjIwNTUxNjU4ODI4OThlNmU2ZTljNDU2M2Q0ZTE1OWEyMjhkMGIzIiwidGFnIjoiIn0=
+> Referer: http://127.0.0.1:8000
+> Content-Length: 59
+> 
+} [59 bytes data]
+* upload completely sent off: 59 bytes
+< HTTP/1.1 204 No Content
+< Host: 127.0.0.1:8000
+< Connection: close
+< X-Powered-By: PHP/8.4.14
+< Cache-Control: no-cache, private
+< Date: Mon, 01 Dec 2025 07:07:44 GMT
+< Vary: X-Inertia
+* Replaced cookie XSRF-TOKEN="eyJpdiI6IkVUbWdlVEhGNG0wWktBaUdacjNaaFE9PSIsInZhbHVlIjoiY1AveXZERVo5MFBES2JGRUtmWGU0c0ZBTHlGakErOFNLaGh5eEpVbmZ0MkhDU1FxVkRlNm9yYzFSbzNJNlMyekgvZzFKZHZuQ2w0UHByTUVldGNaMENwcjBuSytub09YV2xoNHpEWksvM0tCK1R0SjQ4eUpzSHBsTUsrYzRwbjQiLCJtYWMiOiJiNjgwMjQyYzYzM2RjZjE4YzZlODA1Mjg0MmFkZjMzMWZlOWY2ZGQyZGQ2ZTMyNmRiMTYyMTVjNzljNmE4YmYxIiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: XSRF-TOKEN=eyJpdiI6IkVUbWdlVEhGNG0wWktBaUdacjNaaFE9PSIsInZhbHVlIjoiY1AveXZERVo5MFBES2JGRUtmWGU0c0ZBTHlGakErOFNLaGh5eEpVbmZ0MkhDU1FxVkRlNm9yYzFSbzNJNlMyekgvZzFKZHZuQ2w0UHByTUVldGNaMENwcjBuSytub09YV2xoNHpEWksvM0tCK1R0SjQ4eUpzSHBsTUsrYzRwbjQiLCJtYWMiOiJiNjgwMjQyYzYzM2RjZjE4YzZlODA1Mjg0MmFkZjMzMWZlOWY2ZGQyZGQ2ZTMyNmRiMTYyMTVjNzljNmE4YmYxIiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; samesite=lax
+* Replaced cookie wallet-app-session="eyJpdiI6Ii9pUmdVYm1ldWloZC9xZG1IOTVYMEE9PSIsInZhbHVlIjoiWHdCQWNqd2hXcHVnZkZOZmZBTjREamxmNy9OcVQ1dG9qRXdSV09qeGZZMlFFclNRaGJVZmFpajRXNVVWKzJqaHFvaFNseC9yR2pObzNxRW5ta2JrMHdoSllERER1T2NQSHJyK2tTbzVjTmlpd1FQNFRIdkprSlFVaFBqSzJGMEoiLCJtYWMiOiI2ODcxZTAwNTAwZmZjNjcxZjc4Yjg2MGUyYzcwNmQxYThiMTgxNDMxODMxY2JlYjc0ODJkMTYyM2QyNTFmYWMxIiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: wallet-app-session=eyJpdiI6Ii9pUmdVYm1ldWloZC9xZG1IOTVYMEE9PSIsInZhbHVlIjoiWHdCQWNqd2hXcHVnZkZOZmZBTjREamxmNy9OcVQ1dG9qRXdSV09qeGZZMlFFclNRaGJVZmFpajRXNVVWKzJqaHFvaFNseC9yR2pObzNxRW5ta2JrMHdoSllERER1T2NQSHJyK2tTbzVjTmlpd1FQNFRIdkprSlFVaFBqSzJGMEoiLCJtYWMiOiI2ODcxZTAwNTAwZmZjNjcxZjc4Yjg2MGUyYzcwNmQxYThiMTgxNDMxODMxY2JlYjc0ODJkMTYyM2QyNTFmYWMxIiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+< 
+100    59    0     0  100    59      0    216 --:--:-- --:--:-- --:--:--   215100    59    0     0  100    59      0    215 --:--:-- --:--:-- --:--:--   215
+* Closing connection
+
+----- [Step 2] Complete -----
+
+
+----- [Step 3] Fetching Transactions & Balance -----
+Note: Unnecessary use of -X or --request, GET is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:8000...
+* Connected to 127.0.0.1 (127.0.0.1) port 8000
+> GET /api/transactions HTTP/1.1
+> Host: 127.0.0.1:8000
+> User-Agent: curl/8.7.1
+> Cookie: wallet-app-session=eyJpdiI6Ii9pUmdVYm1ldWloZC9xZG1IOTVYMEE9PSIsInZhbHVlIjoiWHdCQWNqd2hXcHVnZkZOZmZBTjREamxmNy9OcVQ1dG9qRXdSV09qeGZZMlFFclNRaGJVZmFpajRXNVVWKzJqaHFvaFNseC9yR2pObzNxRW5ta2JrMHdoSllERER1T2NQSHJyK2tTbzVjTmlpd1FQNFRIdkprSlFVaFBqSzJGMEoiLCJtYWMiOiI2ODcxZTAwNTAwZmZjNjcxZjc4Yjg2MGUyYzcwNmQxYThiMTgxNDMxODMxY2JlYjc0ODJkMTYyM2QyNTFmYWMxIiwidGFnIjoiIn0%3D; XSRF-TOKEN=eyJpdiI6IkVUbWdlVEhGNG0wWktBaUdacjNaaFE9PSIsInZhbHVlIjoiY1AveXZERVo5MFBES2JGRUtmWGU0c0ZBTHlGakErOFNLaGh5eEpVbmZ0MkhDU1FxVkRlNm9yYzFSbzNJNlMyekgvZzFKZHZuQ2w0UHByTUVldGNaMENwcjBuSytub09YV2xoNHpEWksvM0tCK1R0SjQ4eUpzSHBsTUsrYzRwbjQiLCJtYWMiOiJiNjgwMjQyYzYzM2RjZjE4YzZlODA1Mjg0MmFkZjMzMWZlOWY2ZGQyZGQ2ZTMyNmRiMTYyMTVjNzljNmE4YmYxIiwidGFnIjoiIn0%3D
+> Accept: application/json
+> X-XSRF-TOKEN: eyJpdiI6IkVUbWdlVEhGNG0wWktBaUdacjNaaFE9PSIsInZhbHVlIjoiY1AveXZERVo5MFBES2JGRUtmWGU0c0ZBTHlGakErOFNLaGh5eEpVbmZ0MkhDU1FxVkRlNm9yYzFSbzNJNlMyekgvZzFKZHZuQ2w0UHByTUVldGNaMENwcjBuSytub09YV2xoNHpEWksvM0tCK1R0SjQ4eUpzSHBsTUsrYzRwbjQiLCJtYWMiOiJiNjgwMjQyYzYzM2RjZjE4YzZlODA1Mjg0MmFkZjMzMWZlOWY2ZGQyZGQ2ZTMyNmRiMTYyMTVjNzljNmE4YmYxIiwidGFnIjoiIn0=
+> Referer: http://127.0.0.1:8000
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Host: 127.0.0.1:8000
+< Connection: close
+< X-Powered-By: PHP/8.4.14
+< Cache-Control: no-cache, private
+< Date: Mon, 01 Dec 2025 07:07:44 GMT
+< Content-Type: application/json
+< Access-Control-Allow-Origin: *
+* Replaced cookie XSRF-TOKEN="eyJpdiI6ImREWGV4YnpCdXNma3prc1hnTzFkOFE9PSIsInZhbHVlIjoicDU5MlpUVlBiQWxBeVFiNzZQS1I1bHpNdVRVeVYzKzVHUFVqdTdPb1puQ0NzcEg1ai82dSs1bk53UVRuLzdqZm5rbTdqOEVzRXdBSkNwei9NaXIyenE4UTdsczd2ai9KWGMwU0tFNFljbFdDSnhOeHUrMm5vV29KQU1BRGh4WHEiLCJtYWMiOiJiMzg1NDM4NWViYTQyMTczZTcxMTYzNTgwNzhmY2VhMWY0MGYzMDM5Y2JlMjJlZGE3NWY3YjhlNTQ1ZmY1ZDI4IiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: XSRF-TOKEN=eyJpdiI6ImREWGV4YnpCdXNma3prc1hnTzFkOFE9PSIsInZhbHVlIjoicDU5MlpUVlBiQWxBeVFiNzZQS1I1bHpNdVRVeVYzKzVHUFVqdTdPb1puQ0NzcEg1ai82dSs1bk53UVRuLzdqZm5rbTdqOEVzRXdBSkNwei9NaXIyenE4UTdsczd2ai9KWGMwU0tFNFljbFdDSnhOeHUrMm5vV29KQU1BRGh4WHEiLCJtYWMiOiJiMzg1NDM4NWViYTQyMTczZTcxMTYzNTgwNzhmY2VhMWY0MGYzMDM5Y2JlMjJlZGE3NWY3YjhlNTQ1ZmY1ZDI4IiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; samesite=lax
+* Replaced cookie wallet-app-session="eyJpdiI6IkxvYUZDTy9jZCtrUzVURjcvMk12d3c9PSIsInZhbHVlIjoickYvdUx4OFBDR0dMcWRsMlVaazVmWCtZOEw2THF4Q3gvQXRzUW5RbE9vajJ0NjI4SzJOYmJsOVlVeGJUaFFXZEk5UmhNdk1JN28zMG9aMWlXMEt2VXUzOG5YQi9URExNc1N6K2lDNmh5WmZLOWZITGFsL3RNVnZQSXVMMkxOQVAiLCJtYWMiOiI2YTI2NmI2OTRhNjVjNGFhMWRmZDExYTQ2YjVhMzM1YmMwZWQwN2UyNmE5OGIyMDE1NDA1ZjQ2ZWExYzMzZDAwIiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: wallet-app-session=eyJpdiI6IkxvYUZDTy9jZCtrUzVURjcvMk12d3c9PSIsInZhbHVlIjoickYvdUx4OFBDR0dMcWRsMlVaazVmWCtZOEw2THF4Q3gvQXRzUW5RbE9vajJ0NjI4SzJOYmJsOVlVeGJUaFFXZEk5UmhNdk1JN28zMG9aMWlXMEt2VXUzOG5YQi9URExNc1N6K2lDNmh5WmZLOWZITGFsL3RNVnZQSXVMMkxOQVAiLCJtYWMiOiI2YTI2NmI2OTRhNjVjNGFhMWRmZDExYTQ2YjVhMzM1YmMwZWQwN2UyNmE5OGIyMDE1NDA1ZjQ2ZWExYzMzZDAwIiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+< 
+{ [7157 bytes data]
+100  7157    0  7157    0     0   400k      0 --:--:-- --:--:-- --:--:--  411k
+* Closing connection
+{
+  "balance": "1040.1052",
+  "transactions": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": "019ad8b9-a1cd-729c-aa43-2e1186aa8544",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "100.0000",
+        "commission_fee": "1.5000",
+        "status": "completed",
+        "type": "transfer",
+        "reference_id": "0e37dbd7-deca-4323-afb3-2519a4e262f4",
+        "created_at": "2025-12-01T07:03:55.000000Z",
+        "updated_at": "2025-12-01T07:03:55.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad8b9-a1f0-7080-ac68-8d76ae9677ea",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "9999999.0000",
+        "commission_fee": "0.0000",
+        "status": "failed",
+        "type": "transfer",
+        "reference_id": "df40a305-a9b4-412c-8ade-45b2f21a4c0d",
+        "created_at": "2025-12-01T07:03:55.000000Z",
+        "updated_at": "2025-12-01T07:03:55.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad4cf-3f79-71c9-a8c3-68d80a76fa93",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "100.0000",
+        "commission_fee": "1.5000",
+        "status": "completed",
+        "type": "transfer",
+        "reference_id": "9d18471b-1ac2-4f0a-8863-24635f575e09",
+        "created_at": "2025-11-30T12:49:03.000000Z",
+        "updated_at": "2025-11-30T12:49:03.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad4cf-3f95-7333-ac9c-1e41bd0fff31",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "9999999.0000",
+        "commission_fee": "0.0000",
+        "status": "failed",
+        "type": "transfer",
+        "reference_id": "27d519f2-37be-4acc-90d9-43b091d4fdb3",
+        "created_at": "2025-11-30T12:49:03.000000Z",
+        "updated_at": "2025-11-30T12:49:03.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3ca-9d9a-72fc-92bb-69076763b4ce",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "100.0000",
+        "commission_fee": "1.5000",
+        "status": "completed",
+        "type": "transfer",
+        "reference_id": "3f4e1018-9472-4300-a5ac-1225064caad5",
+        "created_at": "2025-11-30T08:04:22.000000Z",
+        "updated_at": "2025-11-30T08:04:22.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3ca-9daf-7023-8331-fa119b4d827b",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "9999999.0000",
+        "commission_fee": "0.0000",
+        "status": "failed",
+        "type": "transfer",
+        "reference_id": "422738ad-5240-412b-ba53-dd62c1e6a881",
+        "created_at": "2025-11-30T08:04:22.000000Z",
+        "updated_at": "2025-11-30T08:04:22.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3c1-d1c0-70bc-b4ad-b2524c348508",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "100.0000",
+        "commission_fee": "1.5000",
+        "status": "completed",
+        "type": "transfer",
+        "reference_id": "63e27294-f38c-40fc-bc2c-225d9f4fdd14",
+        "created_at": "2025-11-30T07:54:46.000000Z",
+        "updated_at": "2025-11-30T07:54:46.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3c1-d1df-72c0-97eb-925c6be00670",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "9999999.0000",
+        "commission_fee": "0.0000",
+        "status": "failed",
+        "type": "transfer",
+        "reference_id": "dd0770cf-c59c-44ec-8adb-1e28317a7bd7",
+        "created_at": "2025-11-30T07:54:46.000000Z",
+        "updated_at": "2025-11-30T07:54:46.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3c0-ab0e-7256-9505-e017fef094cf",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "100.0000",
+        "commission_fee": "1.5000",
+        "status": "completed",
+        "type": "transfer",
+        "reference_id": "9c0440dd-1048-40b6-a28f-273dce36e25a",
+        "created_at": "2025-11-30T07:53:30.000000Z",
+        "updated_at": "2025-11-30T07:53:30.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3c0-ab2b-7154-b874-6b3e832f77c0",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "9999999.0000",
+        "commission_fee": "0.0000",
+        "status": "failed",
+        "type": "transfer",
+        "reference_id": "e723ef83-beb3-469b-bd6e-1d181e05cb7c",
+        "created_at": "2025-11-30T07:53:30.000000Z",
+        "updated_at": "2025-11-30T07:53:30.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3ae-5bcd-73dc-a656-b7d876664a8c",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "100.0000",
+        "commission_fee": "1.5000",
+        "status": "completed",
+        "type": "transfer",
+        "reference_id": "3959d00b-674f-4892-921d-5e20e2176a06",
+        "created_at": "2025-11-30T07:33:30.000000Z",
+        "updated_at": "2025-11-30T07:33:30.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3ae-5be3-71da-be18-44d453c34dab",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "9999999.0000",
+        "commission_fee": "0.0000",
+        "status": "failed",
+        "type": "transfer",
+        "reference_id": "b397ca1f-deab-4fe7-8c2e-61a07f058af1",
+        "created_at": "2025-11-30T07:33:30.000000Z",
+        "updated_at": "2025-11-30T07:33:30.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3ae-3ba3-71ab-b65c-ba97d94d4e49",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "100.0000",
+        "commission_fee": "1.5000",
+        "status": "completed",
+        "type": "transfer",
+        "reference_id": "19899bf3-4758-44ff-96d0-478ba56bd74a",
+        "created_at": "2025-11-30T07:33:22.000000Z",
+        "updated_at": "2025-11-30T07:33:22.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3ae-3bb8-72e8-9483-46368e25b74a",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "9999999.0000",
+        "commission_fee": "0.0000",
+        "status": "failed",
+        "type": "transfer",
+        "reference_id": "18e8feb5-feb4-454c-bb48-bc12d1bba4b5",
+        "created_at": "2025-11-30T07:33:22.000000Z",
+        "updated_at": "2025-11-30T07:33:22.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      },
+      {
+        "id": "019ad3ac-e0cb-7399-9440-b3699e26be32",
+        "sender_id": 2,
+        "receiver_id": 3,
+        "amount": "100.0000",
+        "commission_fee": "1.5000",
+        "status": "completed",
+        "type": "transfer",
+        "reference_id": "b34d6b61-93a3-458b-9ab1-02b4c078e71b",
+        "created_at": "2025-11-30T07:31:53.000000Z",
+        "updated_at": "2025-11-30T07:31:53.000000Z",
+        "sender": {
+          "id": 2,
+          "name": "User A",
+          "email": "user_a@email.com"
+        },
+        "receiver": {
+          "id": 3,
+          "name": "User B",
+          "email": "user_b@email.com"
+        }
+      }
+    ],
+    "first_page_url": "http://127.0.0.1:8000/api/transactions?page=1",
+    "from": 1,
+    "last_page": 2,
+    "last_page_url": "http://127.0.0.1:8000/api/transactions?page=2",
+    "links": [
+      {
+        "url": null,
+        "label": "&laquo; Previous",
+        "page": null,
+        "active": false
+      },
+      {
+        "url": "http://127.0.0.1:8000/api/transactions?page=1",
+        "label": "1",
+        "page": 1,
+        "active": true
+      },
+      {
+        "url": "http://127.0.0.1:8000/api/transactions?page=2",
+        "label": "2",
+        "page": 2,
+        "active": false
+      },
+      {
+        "url": "http://127.0.0.1:8000/api/transactions?page=2",
+        "label": "Next &raquo;",
+        "page": 2,
+        "active": false
+      }
+    ],
+    "next_page_url": "http://127.0.0.1:8000/api/transactions?page=2",
+    "path": "http://127.0.0.1:8000/api/transactions",
+    "per_page": 15,
+    "prev_page_url": null,
+    "to": 15,
+    "total": 22
+  }
+}
+
+----- [Step 3] Complete -----
+
+
+----- [Step 4.1] Testing: Successful Transfer -----
+Note: Unnecessary use of -X or --request, POST is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:8000...
+* Connected to 127.0.0.1 (127.0.0.1) port 8000
+> POST /api/transactions HTTP/1.1
+> Host: 127.0.0.1:8000
+> User-Agent: curl/8.7.1
+> Cookie: wallet-app-session=eyJpdiI6Ii9pUmdVYm1ldWloZC9xZG1IOTVYMEE9PSIsInZhbHVlIjoiWHdCQWNqd2hXcHVnZkZOZmZBTjREamxmNy9OcVQ1dG9qRXdSV09qeGZZMlFFclNRaGJVZmFpajRXNVVWKzJqaHFvaFNseC9yR2pObzNxRW5ta2JrMHdoSllERER1T2NQSHJyK2tTbzVjTmlpd1FQNFRIdkprSlFVaFBqSzJGMEoiLCJtYWMiOiI2ODcxZTAwNTAwZmZjNjcxZjc4Yjg2MGUyYzcwNmQxYThiMTgxNDMxODMxY2JlYjc0ODJkMTYyM2QyNTFmYWMxIiwidGFnIjoiIn0%3D; XSRF-TOKEN=eyJpdiI6IkVUbWdlVEhGNG0wWktBaUdacjNaaFE9PSIsInZhbHVlIjoiY1AveXZERVo5MFBES2JGRUtmWGU0c0ZBTHlGakErOFNLaGh5eEpVbmZ0MkhDU1FxVkRlNm9yYzFSbzNJNlMyekgvZzFKZHZuQ2w0UHByTUVldGNaMENwcjBuSytub09YV2xoNHpEWksvM0tCK1R0SjQ4eUpzSHBsTUsrYzRwbjQiLCJtYWMiOiJiNjgwMjQyYzYzM2RjZjE4YzZlODA1Mjg0MmFkZjMzMWZlOWY2ZGQyZGQ2ZTMyNmRiMTYyMTVjNzljNmE4YmYxIiwidGFnIjoiIn0%3D
+> Content-Type: application/json
+> Accept: application/json
+> X-XSRF-TOKEN: eyJpdiI6IkVUbWdlVEhGNG0wWktBaUdacjNaaFE9PSIsInZhbHVlIjoiY1AveXZERVo5MFBES2JGRUtmWGU0c0ZBTHlGakErOFNLaGh5eEpVbmZ0MkhDU1FxVkRlNm9yYzFSbzNJNlMyekgvZzFKZHZuQ2w0UHByTUVldGNaMENwcjBuSytub09YV2xoNHpEWksvM0tCK1R0SjQ4eUpzSHBsTUsrYzRwbjQiLCJtYWMiOiJiNjgwMjQyYzYzM2RjZjE4YzZlODA1Mjg0MmFkZjMzMWZlOWY2ZGQyZGQ2ZTMyNmRiMTYyMTVjNzljNmE4YmYxIiwidGFnIjoiIn0=
+> Referer: http://127.0.0.1:8000
+> Content-Length: 61
+> 
+} [61 bytes data]
+* upload completely sent off: 61 bytes
+< HTTP/1.1 201 Created
+< Host: 127.0.0.1:8000
+< Connection: close
+< X-Powered-By: PHP/8.4.14
+< Cache-Control: no-cache, private
+< Date: Mon, 01 Dec 2025 07:07:44 GMT
+< Content-Type: application/json
+< Access-Control-Allow-Origin: *
+* Replaced cookie XSRF-TOKEN="eyJpdiI6IjVFMlZ5RTE3OG5SVlBjU3N3cndUSFE9PSIsInZhbHVlIjoiUVZ1c0ZKZWxpWWtqaHlZblg0R2tpYjdnTzlDWENQT1ZTQWszVnoyMTVtZWkvbjBoSUNCdERNVnhLTUR6UVlJR1U1c3pBblFRQ1g5YXNUTzBFUWdKQlZDNkt0a3RnSmtuNWlheDNneXcvTEUzWEdhcTlPWk12T3I4dXozVWhsTkEiLCJtYWMiOiI1YWNjYjcwMDEzYTg0NmFlY2FlYmE0ZDI2NjJiYzQwMjFkZmFiZWZjNWVmMjQ2OTY0NzRhNTg1ZTE2ZGU4MDU4IiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: XSRF-TOKEN=eyJpdiI6IjVFMlZ5RTE3OG5SVlBjU3N3cndUSFE9PSIsInZhbHVlIjoiUVZ1c0ZKZWxpWWtqaHlZblg0R2tpYjdnTzlDWENQT1ZTQWszVnoyMTVtZWkvbjBoSUNCdERNVnhLTUR6UVlJR1U1c3pBblFRQ1g5YXNUTzBFUWdKQlZDNkt0a3RnSmtuNWlheDNneXcvTEUzWEdhcTlPWk12T3I4dXozVWhsTkEiLCJtYWMiOiI1YWNjYjcwMDEzYTg0NmFlY2FlYmE0ZDI2NjJiYzQwMjFkZmFiZWZjNWVmMjQ2OTY0NzRhNTg1ZTE2ZGU4MDU4IiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; samesite=lax
+* Replaced cookie wallet-app-session="eyJpdiI6IkJtWHhBNHFDQjVGOVNteEFOMVc4OWc9PSIsInZhbHVlIjoiR2tDYldaaFhJa2l3QTBvTXJnbDdRQXJsaGlJcmxZL09ZM1YwdFY4NCtSUFEvZDdMODIwOTU0NWs1VjQ4VU1tdm1RendPc3BESk12RXJ1T1lRZzU5aU1CUkhlVjdBMXJMK0hwejA5NHFPa0c1S244L0lIRnpxTldkVXg5THFid20iLCJtYWMiOiJlYzI0NzUwMDNmNzdjMzdkZjY1ZDM5MjlkMjhjNTA5NWU5Zjg5MTgyMDQ5NjBlYWYxYzk5OGE0NjZlMDcwNWVhIiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: wallet-app-session=eyJpdiI6IkJtWHhBNHFDQjVGOVNteEFOMVc4OWc9PSIsInZhbHVlIjoiR2tDYldaaFhJa2l3QTBvTXJnbDdRQXJsaGlJcmxZL09ZM1YwdFY4NCtSUFEvZDdMODIwOTU0NWs1VjQ4VU1tdm1RendPc3BESk12RXJ1T1lRZzU5aU1CUkhlVjdBMXJMK0hwejA5NHFPa0c1S244L0lIRnpxTldkVXg5THFid20iLCJtYWMiOiJlYzI0NzUwMDNmNzdjMzdkZjY1ZDM5MjlkMjhjNTA5NWU5Zjg5MTgyMDQ5NjBlYWYxYzk5OGE0NjZlMDcwNWVhIiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+< 
+{ [304 bytes data]
+100   365    0   304  100    61  12866   2581 --:--:-- --:--:-- --:--:-- 15869
+* Closing connection
+{
+  "message": "Your transfer was successful.",
+  "transaction": {
+    "id": "019ad8bd-2155-7152-8552-842817a2a515",
+    "reference_id": "77198dff-5ee7-4491-9af4-6bb2942bbe77",
+    "sender_id": 2,
+    "receiver_id": 3,
+    "amount": "100.0000",
+    "commission_fee": "1.5000",
+    "type": "transfer",
+    "status": "completed",
+    "created_at": "2025-12-01 07:07"
+  }
+}
+
+
+----- [Step 4.2] Testing: Insufficient Funds -----
+Note: Unnecessary use of -X or --request, POST is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:8000...
+* Connected to 127.0.0.1 (127.0.0.1) port 8000
+> POST /api/transactions HTTP/1.1
+> Host: 127.0.0.1:8000
+> User-Agent: curl/8.7.1
+> Cookie: wallet-app-session=eyJpdiI6Ii9pUmdVYm1ldWloZC9xZG1IOTVYMEE9PSIsInZhbHVlIjoiWHdCQWNqd2hXcHVnZkZOZmZBTjREamxmNy9OcVQ1dG9qRXdSV09qeGZZMlFFclNRaGJVZmFpajRXNVVWKzJqaHFvaFNseC9yR2pObzNxRW5ta2JrMHdoSllERER1T2NQSHJyK2tTbzVjTmlpd1FQNFRIdkprSlFVaFBqSzJGMEoiLCJtYWMiOiI2ODcxZTAwNTAwZmZjNjcxZjc4Yjg2MGUyYzcwNmQxYThiMTgxNDMxODMxY2JlYjc0ODJkMTYyM2QyNTFmYWMxIiwidGFnIjoiIn0%3D; XSRF-TOKEN=eyJpdiI6IkVUbWdlVEhGNG0wWktBaUdacjNaaFE9PSIsInZhbHVlIjoiY1AveXZERVo5MFBES2JGRUtmWGU0c0ZBTHlGakErOFNLaGh5eEpVbmZ0MkhDU1FxVkRlNm9yYzFSbzNJNlMyekgvZzFKZHZuQ2w0UHByTUVldGNaMENwcjBuSytub09YV2xoNHpEWksvM0tCK1R0SjQ4eUpzSHBsTUsrYzRwbjQiLCJtYWMiOiJiNjgwMjQyYzYzM2RjZjE4YzZlODA1Mjg0MmFkZjMzMWZlOWY2ZGQyZGQ2ZTMyNmRiMTYyMTVjNzljNmE4YmYxIiwidGFnIjoiIn0%3D
+> Content-Type: application/json
+> Accept: application/json
+> X-XSRF-TOKEN: eyJpdiI6IkVUbWdlVEhGNG0wWktBaUdacjNaaFE9PSIsInZhbHVlIjoiY1AveXZERVo5MFBES2JGRUtmWGU0c0ZBTHlGakErOFNLaGh5eEpVbmZ0MkhDU1FxVkRlNm9yYzFSbzNJNlMyekgvZzFKZHZuQ2w0UHByTUVldGNaMENwcjBuSytub09YV2xoNHpEWksvM0tCK1R0SjQ4eUpzSHBsTUsrYzRwbjQiLCJtYWMiOiJiNjgwMjQyYzYzM2RjZjE4YzZlODA1Mjg0MmFkZjMzMWZlOWY2ZGQyZGQ2ZTMyNmRiMTYyMTVjNzljNmE4YmYxIiwidGFnIjoiIn0=
+> Referer: http://127.0.0.1:8000
+> Content-Length: 65
+> 
+} [65 bytes data]
+* upload completely sent off: 65 bytes
+< HTTP/1.1 422 Unprocessable Content
+< Host: 127.0.0.1:8000
+< Connection: close
+< X-Powered-By: PHP/8.4.14
+< Cache-Control: no-cache, private
+< Date: Mon, 01 Dec 2025 07:07:44 GMT
+< Content-Type: application/json
+< Access-Control-Allow-Origin: *
+* Replaced cookie XSRF-TOKEN="eyJpdiI6InFQOXFBWlRYeTlUZFoxQVNnQWJSZUE9PSIsInZhbHVlIjoiZlluemUvVDc2REFUbGpFZWZoSTRRY3YxSHg1U1N5ZXp6NnhJc3F1RTRjOFhqWTFlZjQzZlVTQ1hpUzY2VFFYeCtndWZTek54Q05yb0ZkWE9pc3VEMzErOEVOZktWZG82RGxZV1FWWFo4MlI2MHdSVlRobXF5cEx0Y1dYWU04ZUQiLCJtYWMiOiI1Nzc2NTI5YTUzZWJjMTAxMjgyYmQ4Yzc4YmM2MGFhMWYxZTU1ZjhkMTI1YTdkYmE0ODE5OWM0M2ViY2NmNTlhIiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: XSRF-TOKEN=eyJpdiI6InFQOXFBWlRYeTlUZFoxQVNnQWJSZUE9PSIsInZhbHVlIjoiZlluemUvVDc2REFUbGpFZWZoSTRRY3YxSHg1U1N5ZXp6NnhJc3F1RTRjOFhqWTFlZjQzZlVTQ1hpUzY2VFFYeCtndWZTek54Q05yb0ZkWE9pc3VEMzErOEVOZktWZG82RGxZV1FWWFo4MlI2MHdSVlRobXF5cEx0Y1dYWU04ZUQiLCJtYWMiOiI1Nzc2NTI5YTUzZWJjMTAxMjgyYmQ4Yzc4YmM2MGFhMWYxZTU1ZjhkMTI1YTdkYmE0ODE5OWM0M2ViY2NmNTlhIiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; samesite=lax
+* Replaced cookie wallet-app-session="eyJpdiI6IjJwMWJ2Y29SYnZPYU5uREpQTkVyMEE9PSIsInZhbHVlIjoiL2ZRMXA1UGNSZlZyOS9YTkhtYnRQOVNEY1pDcmM0Z0x3ckh0YVBNT2hReXpzRmRwazhQN2YyK1haQTlCMVJBQXo0bG1Gb0VyZzNxWll5ZWVmbW5wanA2Q2szVlY0eEFjVnhqOUdRVVZYUk9OME5zQnVZVGFteWhnRjlESjdkTzIiLCJtYWMiOiJhNmNiMmU2MWVkMDFhMGMxNWFhNmJiZGViNDdjNGEyNWQyNDE2NDg3YTdhNjA0NWMxZjRjZjIxNDc0MmNlOTkxIiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: wallet-app-session=eyJpdiI6IjJwMWJ2Y29SYnZPYU5uREpQTkVyMEE9PSIsInZhbHVlIjoiL2ZRMXA1UGNSZlZyOS9YTkhtYnRQOVNEY1pDcmM0Z0x3ckh0YVBNT2hReXpzRmRwazhQN2YyK1haQTlCMVJBQXo0bG1Gb0VyZzNxWll5ZWVmbW5wanA2Q2szVlY0eEFjVnhqOUdRVVZYUk9OME5zQnVZVGFteWhnRjlESjdkTzIiLCJtYWMiOiJhNmNiMmU2MWVkMDFhMGMxNWFhNmJiZGViNDdjNGEyNWQyNDE2NDg3YTdhNjA0NWMxZjRjZjIxNDc0MmNlOTkxIiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+< 
+{ [68 bytes data]
+100   133    0    68  100    65   4017   3840 --:--:-- --:--:-- --:--:--  8312
+* Closing connection
+{
+  "message": "You have insufficient funds to complete this transfer."
+}
+
+
+----- [Step 4.3] Testing: Invalid Recipient -----
+Note: Unnecessary use of -X or --request, POST is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:8000...
+* Connected to 127.0.0.1 (127.0.0.1) port 8000
+> POST /api/transactions HTTP/1.1
+> Host: 127.0.0.1:8000
+> User-Agent: curl/8.7.1
+> Cookie: wallet-app-session=eyJpdiI6Ii9pUmdVYm1ldWloZC9xZG1IOTVYMEE9PSIsInZhbHVlIjoiWHdCQWNqd2hXcHVnZkZOZmZBTjREamxmNy9OcVQ1dG9qRXdSV09qeGZZMlFFclNRaGJVZmFpajRXNVVWKzJqaHFvaFNseC9yR2pObzNxRW5ta2JrMHdoSllERER1T2NQSHJyK2tTbzVjTmlpd1FQNFRIdkprSlFVaFBqSzJGMEoiLCJtYWMiOiI2ODcxZTAwNTAwZmZjNjcxZjc4Yjg2MGUyYzcwNmQxYThiMTgxNDMxODMxY2JlYjc0ODJkMTYyM2QyNTFmYWMxIiwidGFnIjoiIn0%3D; XSRF-TOKEN=eyJpdiI6IkVUbWdlVEhGNG0wWktBaUdacjNaaFE9PSIsInZhbHVlIjoiY1AveXZERVo5MFBES2JGRUtmWGU0c0ZBTHlGakErOFNLaGh5eEpVbmZ0MkhDU1FxVkRlNm9yYzFSbzNJNlMyekgvZzFKZHZuQ2w0UHByTUVldGNaMENwcjBuSytub09YV2xoNHpEWksvM0tCK1R0SjQ4eUpzSHBsTUsrYzRwbjQiLCJtYWMiOiJiNjgwMjQyYzYzM2RjZjE4YzZlODA1Mjg0MmFkZjMzMWZlOWY2ZGQyZGQ2ZTMyNmRiMTYyMTVjNzljNmE4YmYxIiwidGFnIjoiIn0%3D
+> Content-Type: application/json
+> Accept: application/json
+> X-XSRF-TOKEN: eyJpdiI6IkVUbWdlVEhGNG0wWktBaUdacjNaaFE9PSIsInZhbHVlIjoiY1AveXZERVo5MFBES2JGRUtmWGU0c0ZBTHlGakErOFNLaGh5eEpVbmZ0MkhDU1FxVkRlNm9yYzFSbzNJNlMyekgvZzFKZHZuQ2w0UHByTUVldGNaMENwcjBuSytub09YV2xoNHpEWksvM0tCK1R0SjQ4eUpzSHBsTUsrYzRwbjQiLCJtYWMiOiJiNjgwMjQyYzYzM2RjZjE4YzZlODA1Mjg0MmFkZjMzMWZlOWY2ZGQyZGQ2ZTMyNmRiMTYyMTVjNzljNmE4YmYxIiwidGFnIjoiIn0=
+> Referer: http://127.0.0.1:8000
+> Content-Length: 62
+> 
+} [62 bytes data]
+* upload completely sent off: 62 bytes
+< HTTP/1.1 422 Unprocessable Content
+< Host: 127.0.0.1:8000
+< Connection: close
+< X-Powered-By: PHP/8.4.14
+< Cache-Control: no-cache, private
+< Date: Mon, 01 Dec 2025 07:07:44 GMT
+< Content-Type: application/json
+< Access-Control-Allow-Origin: *
+* Replaced cookie XSRF-TOKEN="eyJpdiI6Ik5VOHltbWdyK0E5OWRCS3cxZFRYcHc9PSIsInZhbHVlIjoiY3orYytyVWtkUHpKaXdxWnExN2Q2NzQyUkFvNDFLbEF5R2g3QkR5NU9BTkhlK3ZNQTE4RFZzVTFDRXROUC9jL1dCTDRBc1JrR1Bvb0NBMDRVV0x3akp2ZnMycG5nS3d0SVArWEUyOUYrVEZmcDZnQmhXempUS0lYOTVDS3pHa3ciLCJtYWMiOiI2NTFjNjcyOTI3OTFlNmI5Yzc4YTViYjg1NTZjMDhlMzIyYjRmOWFlYzJkZTM0NWZjNDFhZWU1OTNhODZjOTU4IiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: XSRF-TOKEN=eyJpdiI6Ik5VOHltbWdyK0E5OWRCS3cxZFRYcHc9PSIsInZhbHVlIjoiY3orYytyVWtkUHpKaXdxWnExN2Q2NzQyUkFvNDFLbEF5R2g3QkR5NU9BTkhlK3ZNQTE4RFZzVTFDRXROUC9jL1dCTDRBc1JrR1Bvb0NBMDRVV0x3akp2ZnMycG5nS3d0SVArWEUyOUYrVEZmcDZnQmhXempUS0lYOTVDS3pHa3ciLCJtYWMiOiI2NTFjNjcyOTI3OTFlNmI5Yzc4YTViYjg1NTZjMDhlMzIyYjRmOWFlYzJkZTM0NWZjNDFhZWU1OTNhODZjOTU4IiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; samesite=lax
+* Replaced cookie wallet-app-session="eyJpdiI6InVSWHFSN0pFN2F6T29jQi9BMnB3eFE9PSIsInZhbHVlIjoiZ3UxbmZ3OFlXRU9uQ0dTaHV0eG8reFVGdGczbEVYWllGT1ZDcThBUHlhY3hwRmZUUGFudEZsQUhrekU4TjRUR2lnN1Fzd1g4UXkzQWhZdUpVaEg5RS9oZWVwbWZkTkRDdWNwenVLUTBtcjVsN0VGRE5QWjhmVGFnUHNJQUcrbTAiLCJtYWMiOiI0NGRiNDA4Yzk4NTM0M2E2YTk0OTFkNDgzOTdkYTk3YzEwNjU3YWFhZmNhY2VkNzk0MGVkOWYxNGE5Zjc2YjJlIiwidGFnIjoiIn0%3D" for domain 127.0.0.1, path /, expire 1764580064
+< Set-Cookie: wallet-app-session=eyJpdiI6InVSWHFSN0pFN2F6T29jQi9BMnB3eFE9PSIsInZhbHVlIjoiZ3UxbmZ3OFlXRU9uQ0dTaHV0eG8reFVGdGczbEVYWllGT1ZDcThBUHlhY3hwRmZUUGFudEZsQUhrekU4TjRUR2lnN1Fzd1g4UXkzQWhZdUpVaEg5RS9oZWVwbWZkTkRDdWNwenVLUTBtcjVsN0VGRE5QWjhmVGFnUHNJQUcrbTAiLCJtYWMiOiI0NGRiNDA4Yzk4NTM0M2E2YTk0OTFkNDgzOTdkYTk3YzEwNjU3YWFhZmNhY2VkNzk0MGVkOWYxNGE5Zjc2YjJlIiwidGFnIjoiIn0%3D; expires=Mon, 01 Dec 2025 09:07:44 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+< 
+{ [125 bytes data]
+100   187    0   125  100    62  10133   5026 --:--:-- --:--:-- --:--:-- 15583
+* Closing connection
+{
+  "message": "The selected receiver email is invalid.",
+  "errors": {
+    "receiver_email": [
+      "The selected receiver email is invalid."
+    ]
+  }
+}
+
+----- [Step 4] Complete -----
+
+
+----- [Step 5] Cleaning up session files -----
+Removed ./cookies.txt
+
+----- [Step 5] Complete -----
+
+=======================================
+Script Finished: Mon Dec  1 12:07:44 +05 2025
+Output saved to ./test-output-api.txt
+=======================================

@@ -1,5 +1,5 @@
 import TransferForm from '@/Components/TransferForm.vue';
-import { config, flushPromises, mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import {
     AxiosError,
     type AxiosResponse,
@@ -11,8 +11,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 // Mock axios
 const mockAxiosPost = vi.fn();
 window.axios = {
+    ...window.axios,
     post: mockAxiosPost,
 } as unknown as AxiosStatic;
+
+vi.mock('ziggy-js');
 
 describe('TransferForm.vue', () => {
     afterEach(() => {
@@ -45,10 +48,7 @@ describe('TransferForm.vue', () => {
         );
         mockAxiosPost.mockRejectedValue(error);
 
-        const wrapper = mount(TransferForm, {
-            shallow: false, // Force a deep mount to render child components
-            global: config.global,
-        });
+        const wrapper = mount(TransferForm);
 
         // 2. Trigger form submission
         await wrapper.find('form').trigger('submit.prevent');
@@ -72,20 +72,17 @@ describe('TransferForm.vue', () => {
         // 1. Mock axios to return a promise that never resolves, keeping it in a processing state
         mockAxiosPost.mockReturnValue(new Promise(() => {}));
 
-        const wrapper = mount(TransferForm, {
-            shallow: false, // Perform a deep mount for consistency
-            global: config.global,
-        });
+        const wrapper = mount(TransferForm);
 
         // 2. Trigger form submission
         await wrapper.find('form').trigger('submit.prevent');
-
+        await flushPromises();
         // 3. Wait for the initial synchronous state change (processing=true)
         await wrapper.vm.$nextTick();
 
         // 4. Assert the button is disabled
         const button = wrapper.find('button[type="submit"]');
-        expect(button.attributes('disabled')).toBe('');
+        expect((button.element as HTMLButtonElement).disabled).toBe(true);
     });
 
     it('resets the form and shows a success message upon a successful API response', async () => {
@@ -93,10 +90,7 @@ describe('TransferForm.vue', () => {
         vi.useFakeTimers();
         mockAxiosPost.mockResolvedValue({ status: 201 });
 
-        const wrapper = mount(TransferForm, {
-            shallow: false, // Perform a deep mount for consistency
-            global: config.global,
-        });
+        const wrapper = mount(TransferForm);
 
         // 2. Trigger form submission
         await wrapper.find('form').trigger('submit.prevent');
@@ -106,8 +100,8 @@ describe('TransferForm.vue', () => {
 
         // 4. Assert the success message is visible
         const successMessage = wrapper.find('[data-testid="success-message"]');
-        expect(successMessage.exists()).toBe(true);
-        expect(successMessage.text()).toBe('Transfer successful!');
+        expect(successMessage.exists()).toBe(true); // The element is now in the DOM
+        expect(successMessage.text()).toBe('dashboard.transfer_successful'); // It uses the i18n key
 
         // 5. Fast-forward time to check if the success message disappears
         await vi.advanceTimersByTimeAsync(2000);

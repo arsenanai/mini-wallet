@@ -6,7 +6,7 @@
         "build": "vue-tsc && vite build",
         "dev": "vite",
         "format": "prettier --write resources/js/",
-        "lint": "eslint resources/js --ext .js,.ts,.vue --ignore-path .gitignore --fix",
+        "lint": "eslint resources/js --ext .js,.ts,.vue --ignore-path .gitignore --fix --config ./.eslintrc.cjs",
         "test:unit": "vitest run"
     },
     "devDependencies": {
@@ -44,7 +44,8 @@
         "vitest": "^2.0.2",
         "vue": "^3.4.0",
         "vue-i18n": "^9.13.1",
-        "vue-tsc": "^2.0.24"
+        "vue-tsc": "^2.0.24",
+        "ziggy-js": "^2.6.0"
     },
     "overrides": {
         "esbuild": "^0.25.0"

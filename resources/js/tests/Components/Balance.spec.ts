@@ -4,9 +4,9 @@ import { describe, expect, it } from 'vitest';
 
 describe('Balance.vue', () => {
     it('correctly formats a numeric balance into a currency string', () => {
-        const balance = 123.45;
+        const balance = '123.45';
         const wrapper = mount(Balance, {
-            props: { balance },
+            props: { balance: balance },
             global: {
                 mocks: {
                     $t: (key: string) => key, // Simple mock that returns the key

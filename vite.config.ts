@@ -4,6 +4,9 @@ import { resolve } from 'path';
 import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
+    build: {
+        sourcemap: true,
+    },
     plugins: [
         laravel({
             input: 'resources/js/app.ts',
@@ -21,7 +24,6 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': resolve(__dirname, './resources/js'),
-            'ziggy-js': resolve(__dirname, './vendor/tightenco/ziggy/dist/vue.es.js'),
         },
     },
 });

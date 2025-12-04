@@ -43,8 +43,16 @@ class TransactionCompleted implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'transaction'   => $this->transaction->load([ 'sender:id,name,email', 'receiver:id,name,email' ]),
-            'updated_balance' => $this->user->balance,
+            'transaction' => $this->transaction->load(['sender:id,name,email', 'receiver:id,name,email']),
+            'balance' => (string) $this->user->balance,
         ];
+    }
+
+    /**
+     * The event's broadcast name.
+     */
+    public function broadcastAs(): string
+    {
+        return 'TransactionCompleted';
     }
 }
