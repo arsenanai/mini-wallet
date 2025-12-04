@@ -1,8 +1,7 @@
 import Dashboard from '@/Pages/Dashboard.vue';
 import { Paginated, Transaction, User } from '@/types';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { AxiosStatic } from 'axios';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // --- Mock Data ---
 const currentUser: User = {
@@ -57,12 +56,6 @@ window.axios = {
 } as unknown as AxiosStatic;
 
 describe('Dashboard.vue', () => {
-    beforeEach(() => {
-        // Clear mocks before each test
-        vi.clearAllMocks();
-        mockAxiosGet.mockClear();
-    });
-
     it('updates balance and prepends a new transaction when a TransactionCompleted event is received', async () => {
         const newTransactionEvent: {
             balance: string; // Simulate real-world data where numbers are often strings
@@ -85,6 +78,7 @@ describe('Dashboard.vue', () => {
         const wrapper = mount(Dashboard, {
             props: JSON.parse(JSON.stringify(initialProps)),
         });
+        await flushPromises(); // Wait for onMounted to complete
 
         // 1. Verify initial state
         expect(wrapper.text()).toContain('$1,000.00');
@@ -142,6 +136,7 @@ describe('Dashboard.vue', () => {
         const wrapper = mount(Dashboard, {
             props: JSON.parse(JSON.stringify(initialProps)),
         });
+        await flushPromises(); // Wait for onMounted to complete
 
         // 2. Act
         // Trigger the event with the incomplete data

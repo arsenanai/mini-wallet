@@ -76,9 +76,6 @@ describe('TransferForm.vue', () => {
 
         // 2. Trigger form submission
         await wrapper.find('form').trigger('submit.prevent');
-        await flushPromises();
-        // 3. Wait for the initial synchronous state change (processing=true)
-        await wrapper.vm.$nextTick();
 
         // 4. Assert the button is disabled
         const button = wrapper.find('button[type="submit"]');

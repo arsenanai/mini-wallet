@@ -27,7 +27,7 @@ const ziggyMock = {
 vi.stubGlobal('Ziggy', ziggyMock);
 
 // Install plugins globally for all tests, mimicking app.ts
-config.global.plugins = [i18n, ZiggyVue];
+config.global.plugins = [i18n, ZiggyVue as any];
 
 // Mock Inertia's usePage() to provide a default user for all tests
 vi.mock('@inertiajs/vue3', async (importOriginal) => {
@@ -67,7 +67,16 @@ vi.mock('vue-i18n', async (importOriginal) => {
     return {
         ...actual,
         useI18n: () => ({
-            t: (key: string) => key,
+            t: (key: string, params?: Record<string, string>) => {
+                // A more robust mock that handles placeholders
+                if (params) {
+                    return Object.entries(params).reduce(
+                        (acc, [param, value]) => acc.replace(`{${param}}`, value),
+                        key,
+                    );
+                }
+                return key;
+            },
         }),
     };
 });

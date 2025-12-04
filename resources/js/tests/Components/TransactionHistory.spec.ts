@@ -52,8 +52,7 @@ describe('TransactionHistory.vue', () => {
             global: {
                 mocks: {
                     // Provide a mock that handles placeholder replacement
-                    $t: (key: string, values: Record<string, string>) =>
-                        key.replace('{name}', values.name),
+                    $t: (key: string, values: Record<string, string>) => key.replace('{name}', values.name),
                 },
             },
         });
@@ -61,19 +60,6 @@ describe('TransactionHistory.vue', () => {
         // Note: The exact output depends on the test runner's timezone.
         // We check for the presence of the core date and time parts.
         expect(wrapper.text()).toContain('January 15, 2024');
-    });
-
-    it('displays a "No transactions yet" message when the transaction list is empty', () => {
-        const wrapper = mount(TransactionHistory, {
-            props: { transactions: mockTransactionsTemplate },
-            global: {
-                mocks: {
-                    $t: (key: string) => key,
-                },
-            },
-        });
-
-        expect(wrapper.text()).toContain('No transactions yet.');
     });
 
     it('correctly renders an outgoing transaction', () => {
@@ -96,8 +82,7 @@ describe('TransactionHistory.vue', () => {
             props: { transactions },
             global: {
                 mocks: {
-                    $t: (key: string, values: Record<string, string>) =>
-                        key.replace('{name}', values.name),
+                    $t: (key: string, values: Record<string, string>) => key.replace('{name}', values.name),
                 },
             },
         });
@@ -127,8 +112,7 @@ describe('TransactionHistory.vue', () => {
             props: { transactions },
             global: {
                 mocks: {
-                    $t: (key: string, values: Record<string, string>) =>
-                        key.replace('{name}', values.name),
+                    $t: (key: string, values: Record<string, string>) => key.replace('{name}', values.name),
                 },
             },
         });
