@@ -82,7 +82,7 @@ Open the `.env` file and configure the following variables:
     BROADCAST_CONNECTION=pusher
     PUSHER_APP_ID=your_pusher_app_id
     PUSHER_APP_KEY=your_pusher_app_key
-    PUSHER_SECRET=your_pusher_secret
+    PUSHER_APP_SECRET=your_pusher_secret
     PUSHER_APP_CLUSTER=your_pusher_cluster
     ```
 
@@ -92,6 +92,14 @@ Open the `.env` file and configure the following variables:
     QUEUE_CONNECTION=database
     SESSION_DRIVER=database
     ```
+
+-   **Dusk Testing Environment (Optional):**
+    If you plan to run browser tests, create a local Dusk environment file. This will use a separate test database (`wallet_test` by default).
+    ```bash
+    cp .env.dusk.local.example .env.dusk.local
+    ```
+    Make sure to create the database specified in `.env.dusk.local` (e.g., `wallet_test`).
+
 
 **5. Run Database Migrations and Seed**
 This will create all necessary tables and populate the database with a central commission account and 100 sample users.
@@ -110,7 +118,7 @@ npm run build
 
 To run the application, you need to start the web server, the Vite development server, and the queue worker.
 
-**Recommended Method (Concurrent)**
+**1. Recommended Method (Concurrent)**
 
 A convenient script is included in `composer.json` to run all necessary services at once.
 ```bash
