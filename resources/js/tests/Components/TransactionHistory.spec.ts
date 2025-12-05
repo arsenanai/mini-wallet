@@ -1,7 +1,7 @@
 import TransactionHistory from '@/Components/TransactionHistory.vue';
 import { Paginated, Transaction, User } from '@/types';
-import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { VueWrapper, mount } from '@vue/test-utils';
+import { describe, expect, it, vi } from 'vitest';
 
 const currentUser: User = {
     id: 1,
@@ -30,6 +30,48 @@ const mockTransactionsTemplate: Paginated<Transaction> = {
     },
 };
 
+const mockTranslations = {
+    'dashboard.sent_to': 'Sent to {name}',
+    'dashboard.received_from': 'Received from {name}',
+    'dashboard.no_transactions': 'No transactions yet.',
+    'dashboard.transaction_history': 'Transaction History',
+};
+
+const mock$t = (key: string, values?: Record<string, string>) => {
+    let translation =
+        mockTranslations[key as keyof typeof mockTranslations] || key;
+    if (values) {
+        Object.keys(values).forEach((valueKey) => {
+            translation = translation.replace(
+                `{${valueKey}}`,
+                values[valueKey],
+            );
+        });
+    }
+    return translation;
+};
+
+// Mock the vue-i18n composable
+vi.mock('vue-i18n', () => ({
+    useI18n: () => ({
+        t: mock$t,
+    }),
+}));
+
+// Helper to mount the component with all necessary mocks
+const mountComponent = (transactions: Paginated<Transaction>): VueWrapper => {
+    return mount(TransactionHistory, {
+        props: { transactions },
+        global: {
+            // Provide mocks for global properties and other composables
+            mocks: {
+                $t: mock$t,
+                usePage: () => ({ props: { auth: { user: currentUser } } }),
+            },
+        },
+    });
+};
+
 describe('TransactionHistory.vue', () => {
     it('correctly formats a date string into a readable format', () => {
         const transactions = JSON.parse(
@@ -47,16 +89,7 @@ describe('TransactionHistory.vue', () => {
             receiver: otherUser,
         });
 
-        const wrapper = mount(TransactionHistory, {
-            props: { transactions },
-            global: {
-                mocks: {
-                    // Provide a mock that handles placeholder replacement
-                    $t: (key: string, values: Record<string, string>) =>
-                        key.replace('{name}', values.name),
-                },
-            },
-        });
+        const wrapper = mountComponent(transactions);
 
         // Note: The exact output depends on the test runner's timezone.
         // We check for the presence of the core date and time parts.
@@ -79,15 +112,7 @@ describe('TransactionHistory.vue', () => {
             receiver: otherUser,
         });
 
-        const wrapper = mount(TransactionHistory, {
-            props: { transactions },
-            global: {
-                mocks: {
-                    $t: (key: string, values: Record<string, string>) =>
-                        key.replace('{name}', values.name),
-                },
-            },
-        });
+        const wrapper = mountComponent(transactions);
 
         expect(wrapper.text()).toContain('Sent to Other User');
         expect(wrapper.text()).toContain('-$101.50'); // Amount + commission
@@ -110,15 +135,7 @@ describe('TransactionHistory.vue', () => {
             receiver: currentUser,
         });
 
-        const wrapper = mount(TransactionHistory, {
-            props: { transactions },
-            global: {
-                mocks: {
-                    $t: (key: string, values: Record<string, string>) =>
-                        key.replace('{name}', values.name),
-                },
-            },
-        });
+        const wrapper = mountComponent(transactions);
 
         expect(wrapper.text()).toContain('Received from Other User');
         expect(wrapper.text()).toContain('+$50.00');

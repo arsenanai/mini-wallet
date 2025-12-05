@@ -4,7 +4,7 @@ import TransactionHistory from '@/Components/TransactionHistory.vue';
 import TransferForm from '@/Components/TransferForm.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Paginated, Transaction, User } from '@/types';
-import { DashboardDataResponse } from '@/types/api';
+import { DashboardDataResponse, TransferSuccessResponse } from '@/types/api';
 import { Head, usePage } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, ref } from 'vue';
 
@@ -16,12 +16,39 @@ const user = usePage().props.auth.user as User;
 const localBalance = ref(props.balance);
 const localTransactions = ref<Paginated<Transaction>>(props.transactions);
 
-const handleTransferSuccess = (data: {
-    balance: string;
-    transaction: Transaction;
-}) => {
+const handleTransferSuccess = async (
+    data:
+        | TransferSuccessResponse
+        | { balance: string; transaction: Transaction },
+) => {
     localBalance.value = data.balance;
-    localTransactions.value.data.unshift(data.transaction);
+
+    const newTransaction = data.transaction;
+
+    // Immediately add the transaction to the top of the list for instant UI feedback.
+    localTransactions.value.data.unshift(newTransaction);
+
+    // If the transaction from the event is incomplete (e.g., from a broadcast),
+    // fetch the full details from the API.
+    if (!newTransaction.sender || !newTransaction.receiver) {
+        try {
+            const response = await window.axios.get<{ data: Transaction }>(
+                route('api.transactions.show', {
+                    transaction: newTransaction.id,
+                }),
+            );
+            // The API resource wraps the data in a 'data' property.
+            // We find the transaction in the local list and replace it with the full data.
+            const index = localTransactions.value.data.findIndex(
+                (t) => t.id === newTransaction.id,
+            );
+            if (index !== -1)
+                localTransactions.value.data[index] = response.data.data;
+        } catch (e) {
+            // Log error but don't crash the UI. The incomplete transaction is already displayed.
+            console.error('Failed to fetch full transaction details:', e);
+        }
+    }
 };
 
 onMounted(() => {

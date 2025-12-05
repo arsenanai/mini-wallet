@@ -33,6 +33,18 @@ const formatDate = (dateString: string) => {
 const { t } = useI18n();
 
 const transactionDetails = (transaction: Transaction) => {
+    // Gracefully handle transactions where sender/receiver details might be missing
+    // This can happen briefly when a real-time event arrives before full details are fetched.
+    if (!transaction.sender || !transaction.receiver) {
+        return {
+            icon: ArrowDownCircleIcon, // Generic icon
+            iconClass: 'text-gray-400 animate-pulse',
+            title: 'Processing transaction...',
+            amount: '',
+            amountClass: 'text-gray-400',
+        };
+    }
+
     const isSender = transaction.sender.id === currentUser.id;
     const isCompleted = transaction.status === 'completed';
 

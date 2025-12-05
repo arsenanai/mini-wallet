@@ -1,7 +1,8 @@
 import Dashboard from '@/Pages/Dashboard.vue';
 import { Paginated, Transaction, User } from '@/types';
-import { flushPromises, mount } from '@vue/test-utils';
+import { VueWrapper, flushPromises, mount } from '@vue/test-utils';
 import { AxiosStatic } from 'axios';
+import { vi } from 'vitest';
 
 // --- Mock Data ---
 const currentUser: User = {
@@ -55,6 +56,74 @@ window.axios = {
     get: mockAxiosGet,
 } as unknown as AxiosStatic;
 
+// Mock Laravel Echo and Pusher
+const mockListen = vi.fn();
+window.Echo = {
+    private: vi.fn(() => ({
+        listen: mockListen,
+        on: vi.fn(), // Mock the 'on' method as well
+    })),
+    leave: vi.fn(),
+} as any;
+
+// Mock the global `route` function from Ziggy
+const route = vi.fn(
+    (name, params) => `http://localhost/api/transactions/${params.transaction}`,
+);
+vi.stubGlobal('route', route);
+
+// Mock the vue-i18n composable at the module level
+vi.mock('vue-i18n', () => ({
+    useI18n: () => ({
+        t: mock$t,
+    }),
+}));
+
+const mockTranslations = {
+    'dashboard.sent_to': 'Sent to {name}',
+    'dashboard.received_from': 'Received from {name}',
+    'dashboard.header': 'Mini Wallet Dashboard',
+    'dashboard.balance': 'Current Balance',
+    'dashboard.transaction_history': 'Transaction History',
+    'dashboard.send_money': 'Send Money',
+    'dashboard.recipient_email': "Recipient's Email",
+    'dashboard.amount': 'Amount',
+    'dashboard.transfer_successful': 'Transfer successful!',
+    'dashboard.no_transactions': 'No transactions yet.',
+};
+
+const mock$t = (key: string, values?: Record<string, string>) => {
+    let translation =
+        mockTranslations[key as keyof typeof mockTranslations] || key;
+    if (values) {
+        Object.keys(values).forEach((valueKey) => {
+            translation = translation.replace(
+                `{${valueKey}}`,
+                values[valueKey],
+            );
+        });
+    }
+    return translation;
+};
+
+// Helper to mount the component with all necessary mocks
+const mountComponent = (props: any): VueWrapper => {
+    return mount(Dashboard, {
+        props: JSON.parse(JSON.stringify(props)),
+        global: {
+            mocks: {
+                $t: mock$t,
+                usePage: () => ({ props: { auth: { user: currentUser } } }),
+            },
+        },
+    });
+};
+
+beforeEach(() => {
+    mockListen.mockClear();
+    mockAxiosGet.mockClear();
+});
+
 describe('Dashboard.vue', () => {
     it('updates balance and prepends a new transaction when a TransactionCompleted event is received', async () => {
         const newTransactionEvent: {
@@ -75,10 +144,8 @@ describe('Dashboard.vue', () => {
             },
         };
 
-        const wrapper = mount(Dashboard, {
-            props: JSON.parse(JSON.stringify(initialProps)),
-        });
-        await flushPromises(); // Wait for onMounted to complete
+        const wrapper = mountComponent(initialProps);
+        await flushPromises(); // Wait for onMounted to complete and Echo listener to be set up
 
         // 1. Verify initial state
         expect(wrapper.text()).toContain('$1,000.00');
@@ -89,8 +156,7 @@ describe('Dashboard.vue', () => {
 
         // 2. Simulate the Pusher event
         // Get the callback passed to `listen` and execute it
-        const echoInstance = window.Echo.private('App.Models.User.1');
-        const listenCallback = (echoInstance.listen as any).mock.calls[0][1];
+        const listenCallback = mockListen.mock.calls[0][1];
         listenCallback(newTransactionEvent);
 
         await wrapper.vm.$nextTick();
@@ -131,24 +197,25 @@ describe('Dashboard.vue', () => {
         };
 
         // Mock the axios response
-        mockAxiosGet.mockResolvedValue({ data: fullTransaction });
+        mockAxiosGet.mockResolvedValue({ data: { data: fullTransaction } });
 
-        const wrapper = mount(Dashboard, {
-            props: JSON.parse(JSON.stringify(initialProps)),
-        });
+        const wrapper = mountComponent(initialProps);
         await flushPromises(); // Wait for onMounted to complete
 
         // 2. Act
         // Trigger the event with the incomplete data
-        const echoInstance = window.Echo.private('App.Models.User.1');
-        const listenCallback = (echoInstance.listen as any).mock.calls[0][1];
+        const listenCallback = mockListen.mock.calls[0][1];
         await listenCallback(incompleteTransactionEvent);
+        await flushPromises(); // Allow the axios call to resolve
+        await wrapper.vm.$nextTick(); // Allow the DOM to update
 
         // 3. Assert
         // Assert that axios was called to fetch the full details
         expect(mockAxiosGet).toHaveBeenCalledOnce();
         expect(mockAxiosGet).toHaveBeenCalledWith(
-            `http://localhost/api/transactions/${incompleteTransactionEvent.transaction.id}`,
+            route('api.transactions.show', {
+                transaction: incompleteTransactionEvent.transaction.id,
+            }),
         );
 
         // Assert that the UI updated with the *full* transaction data

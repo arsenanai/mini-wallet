@@ -1,11 +1,6 @@
 import TransferForm from '@/Components/TransferForm.vue';
-import { flushPromises, mount } from '@vue/test-utils';
-import {
-    AxiosError,
-    type AxiosResponse,
-    type AxiosStatic,
-    type InternalAxiosRequestConfig,
-} from 'axios';
+import { VueWrapper, flushPromises, mount } from '@vue/test-utils';
+import { AxiosError, type AxiosStatic } from 'axios';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // Mock axios
@@ -17,6 +12,23 @@ window.axios = {
 
 vi.mock('ziggy-js');
 
+// Mock the global `route` function from Ziggy
+const route = vi.fn(() => 'http://localhost/api/transactions');
+vi.stubGlobal('route', route);
+
+// Helper to mount the component with all necessary mocks
+const mountComponent = (): VueWrapper => {
+    return mount(TransferForm, {
+        global: {
+            // Mock i18n and useI18n
+            mocks: {
+                $t: (key: string) => key,
+                useI18n: () => ({ t: (key: string) => key }),
+            },
+        },
+    });
+};
+
 describe('TransferForm.vue', () => {
     afterEach(() => {
         mockAxiosPost.mockClear();
@@ -26,35 +38,31 @@ describe('TransferForm.vue', () => {
 
     it('displays validation errors for email and amount fields', async () => {
         // 1. Mock a realistic AxiosError for a 422 validation failure.
-        const error = new AxiosError(
-            'The given data was invalid.',
-            '422',
-            {} as InternalAxiosRequestConfig,
-            null,
-            {
-                status: 422,
-                statusText: 'Unprocessable Content',
-                data: {
-                    errors: {
-                        receiver_email: [
-                            'The selected recipient email is invalid.',
-                        ],
-                        amount: ['The amount must be at least 0.01.'],
-                    },
+        const error = new AxiosError('Validation Error');
+        error.response = {
+            data: {
+                errors: {
+                    receiver_email: [
+                        'The selected recipient email is invalid.',
+                    ],
+                    amount: ['The amount must be at least 0.01.'],
                 },
-                headers: {},
-                config: {} as InternalAxiosRequestConfig,
-            } as AxiosResponse,
-        );
+            },
+            status: 422,
+            statusText: 'Unprocessable Content',
+            headers: {},
+            config: {} as any,
+        };
         mockAxiosPost.mockRejectedValue(error);
 
-        const wrapper = mount(TransferForm);
+        const wrapper = mountComponent();
 
         // 2. Trigger form submission
         await wrapper.find('form').trigger('submit.prevent');
 
         // 3. Wait for the rejected promise to be processed and the DOM to update
         await flushPromises();
+        await wrapper.vm.$nextTick();
 
         // 4. Assert the errors are visible
         const emailError = wrapper.find('[data-testid="receiver-email-error"]');
@@ -72,10 +80,11 @@ describe('TransferForm.vue', () => {
         // 1. Mock axios to return a promise that never resolves, keeping it in a processing state
         mockAxiosPost.mockReturnValue(new Promise(() => {}));
 
-        const wrapper = mount(TransferForm);
+        const wrapper = mountComponent();
 
         // 2. Trigger form submission
         await wrapper.find('form').trigger('submit.prevent');
+        await wrapper.vm.$nextTick();
 
         // 4. Assert the button is disabled
         const button = wrapper.find('button[type="submit"]');
@@ -85,15 +94,18 @@ describe('TransferForm.vue', () => {
     it('resets the form and shows a success message upon a successful API response', async () => {
         // 1. Mock a successful response from axios
         vi.useFakeTimers();
-        mockAxiosPost.mockResolvedValue({ status: 201 });
+        mockAxiosPost.mockResolvedValue({
+            data: { balance: '900.00', transaction: {} },
+        });
 
-        const wrapper = mount(TransferForm);
+        const wrapper = mountComponent();
 
         // 2. Trigger form submission
         await wrapper.find('form').trigger('submit.prevent');
 
         // 3. Wait for the promise to resolve and the DOM to update
         await flushPromises();
+        await wrapper.vm.$nextTick();
 
         // 4. Assert the success message is visible
         const successMessage = wrapper.find('[data-testid="success-message"]');

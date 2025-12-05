@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Tests\TestCase;
 
 uses(
