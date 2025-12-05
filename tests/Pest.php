@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Tests\TestCase;
 
 uses(
-    Tests\DuskTestCase::class
+    Tests\DuskTestCase::class,
 )->in('Browser', 'Dusk');
 
 /*

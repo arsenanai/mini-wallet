@@ -52,7 +52,8 @@ describe('TransactionHistory.vue', () => {
             global: {
                 mocks: {
                     // Provide a mock that handles placeholder replacement
-                    $t: (key: string, values: Record<string, string>) => key.replace('{name}', values.name),
+                    $t: (key: string, values: Record<string, string>) =>
+                        key.replace('{name}', values.name),
                 },
             },
         });
@@ -82,7 +83,8 @@ describe('TransactionHistory.vue', () => {
             props: { transactions },
             global: {
                 mocks: {
-                    $t: (key: string, values: Record<string, string>) => key.replace('{name}', values.name),
+                    $t: (key: string, values: Record<string, string>) =>
+                        key.replace('{name}', values.name),
                 },
             },
         });
@@ -112,7 +114,8 @@ describe('TransactionHistory.vue', () => {
             props: { transactions },
             global: {
                 mocks: {
-                    $t: (key: string, values: Record<string, string>) => key.replace('{name}', values.name),
+                    $t: (key: string, values: Record<string, string>) =>
+                        key.replace('{name}', values.name),
                 },
             },
         });

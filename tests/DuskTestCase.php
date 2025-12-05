@@ -5,11 +5,26 @@ namespace Tests;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Illuminate\Foundation\Application;
 use Laravel\Dusk\TestCase as BaseTestCase;
 
 abstract class DuskTestCase extends BaseTestCase
 {
-    use CreatesApplication;
+    use CreatesApplication {
+        createApplication as baseCreateApplication;
+    }
+
+    public function createApplication(): Application
+    {
+        $app = $this->baseCreateApplication();
+        // Force the broadcast driver to 'pusher' for Dusk tests
+        // to ensure real-time events are actually broadcasted.
+        $app['config']->set('broadcasting.default', 'pusher');
+        // Force the queue driver to 'sync' to ensure broadcast events are
+        // sent immediately without needing a queue worker.
+        $app['config']->set('queue.default', 'sync');
+        return $app;
+    }
 
     /**
      * Prepare for Dusk test execution.
@@ -48,10 +63,7 @@ abstract class DuskTestCase extends BaseTestCase
 
         return RemoteWebDriver::create(
             $_ENV['DUSK_DRIVER_URL'] ?? 'http://localhost:9515',
-            DesiredCapabilities::chrome()->setCapability(
-                ChromeOptions::CAPABILITY,
-                $options
-            )
+            DesiredCapabilities::chrome()->setCapability(ChromeOptions::CAPABILITY, $options)
         );
     }
 }

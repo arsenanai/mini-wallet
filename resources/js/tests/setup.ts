@@ -71,7 +71,8 @@ vi.mock('vue-i18n', async (importOriginal) => {
                 // A more robust mock that handles placeholders
                 if (params) {
                     return Object.entries(params).reduce(
-                        (acc, [param, value]) => acc.replace(`{${param}}`, value),
+                        (acc, [param, value]) =>
+                            acc.replace(`{${param}}`, value),
                         key,
                     );
                 }

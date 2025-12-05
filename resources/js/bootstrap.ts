@@ -18,30 +18,6 @@ window.Echo = new Echo({
     key: import.meta.env.VITE_PUSHER_APP_KEY,
     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
-    authorizer: (channel: { name: string }) => {
-        return {
-            authorize: (
-                socketId: string, // The socket ID for the connection
-                callback: (
-                    error: Error | null,
-                    // The authData object must have an `auth` property.
-                    authData: { auth: string } | null,
-                ) => void,
-            ) => {
-                window.axios
-                    .post('/api/broadcasting/auth', {
-                        socket_id: socketId,
-                        channel_name: channel.name,
-                    })
-                    .then((response) => {
-                        callback(null, response.data); // Pass null for the error on success
-                    })
-                    .catch((error) => {
-                        callback(error, null); // Pass the error object on failure
-                    });
-            },
-        };
-    },
     // You might need to specify host and port if you are not using the default Pusher sandbox.
     // wsHost: window.location.hostname,
     // wsPort: 6001,

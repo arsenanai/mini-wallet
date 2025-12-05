@@ -20,7 +20,7 @@ beforeEach(function () {
     User::factory()->create(['email' => config('wallet.commission_account_email'), 'balance' => 0]);
 });
 
-test('a user can successfully make a transfer and both users see real time updates', function () {
+test('a user can successfully make a transfer and see real time updates', function () {
     // 1. Arrange: Create users with the exact balances needed for this test.
     $senderInitialBalance = 1000.00;
     $receiverInitialBalance = 500.00;
@@ -146,5 +146,42 @@ test('a user sees validation errors for invalid inputs', function () {
 
         // Final check: Balance should not have changed
         $browser->assertSeeIn('@balance-amount', '$500.00');
+    });
+});
+
+test('a user can receive a transfer and see real time updates', function () {
+    // 1. Arrange: Prepare database data
+    $receiverInitialBalance = 500.00;
+    $transferAmount = 75.00;
+
+    $receiver = User::factory()->create(['name' => 'Receiver User', 'balance' => $receiverInitialBalance]);
+    $sender = User::factory()->create(['name' => 'Sender User', 'balance' => 200.00]);
+
+    $finalReceiverBalance = $receiverInitialBalance + $transferAmount;
+    $formattedFinalBalance = '$' . number_format($finalReceiverBalance, 2, '.', ',');
+    $formattedTransferAmount = '+$' . number_format($transferAmount, 2);
+
+    $this->browse(function (Browser $browser) use ($receiver, $sender, $transferAmount, $formattedFinalBalance, $formattedTransferAmount) {
+        // 2. Act: The receiver logs in and opens the dashboard
+        $browser->loginAs($receiver)
+            ->maximize() // Maximize the browser window for better visibility
+            ->visit('/dashboard')
+            ->waitForLocation('/dashboard')
+            ->assertSeeIn('@balance-amount', '$500.00');
+
+        // 3. Act: Mimic another user sending a transfer programmatically
+        $transactionService = app(\App\Services\TransactionService::class);
+        $transaction = $transactionService->createTransfer($sender, $receiver->email, $transferAmount);
+
+        // 4. Assert: The receiver sees their balance update in real-time via Echo
+        $browser->waitForTextIn('@balance-amount', $formattedFinalBalance, 10)
+                ->assertSeeIn('@balance-amount', $formattedFinalBalance);
+
+        // 5. Assert: The receiver sees the new transaction appear in their history
+        $browser->waitFor("@transaction-{$transaction->id}", 5)
+                ->within("@transaction-{$transaction->id}", function ($item) use ($sender, $formattedTransferAmount) {
+                    $item->assertSee('Received from ' . $sender->name)
+                         ->assertSee($formattedTransferAmount);
+                });
     });
 });

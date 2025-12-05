@@ -36,16 +36,21 @@ onMounted(() => {
         console.log('[Echo] Successfully subscribed to the private channel!');
     });
 
-    channel.on('pusher:subscription_error', (status: number) => {
+    channel.on('pusher:subscription_error', (error: any) => {
         console.error(
-            `[Echo] Failed to subscribe to private channel with status: ${status}`,
+            `[Echo] Failed to subscribe to private channel. Error:`,
+            error,
         );
     });
     // --- END DEBUGGING ---
 
     channel.listen(
-        '.TransactionCompleted', // Note: It's good practice to prefix the event name with a dot
+        // The event name must match the fully qualified class name of the event.
+        // If `broadcastAs()` is defined in the event, use that name prefixed with a dot.
+        // The leading dot tells Echo not to prepend the app's namespace.
+        '.TransactionCompleted',
         async (event: { balance: string; transaction: Transaction }) => {
+            console.log('[Echo] TransactionCompleted event received:', event);
             handleTransferSuccess(event);
         },
     );

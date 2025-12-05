@@ -79,6 +79,10 @@ class TransactionService
             $receiver->increment('balance', $amount);
             $commissionAccount->increment('balance', $commission);
 
+            // Refresh the models to get the updated balances from the database
+            $sender->refresh();
+            $receiver->refresh();
+
             // Create the transaction record
             $transaction = Transaction::create([
                 'sender_id'      => $sender->id,
@@ -91,8 +95,8 @@ class TransactionService
             ]);
 
             // Dispatch events for real-time updates
-            event(new TransactionCompleted($transaction, $sender));
-            event(new TransactionCompleted($transaction, $receiver));
+            TransactionCompleted::dispatch($transaction, $sender);
+            TransactionCompleted::dispatch($transaction, $receiver);
 
             return $transaction;
         });
