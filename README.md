@@ -1,180 +1,152 @@
-# Mini Wallet Application
+Mini Wallet Application
+=======================
 
 This is a high-performance, simplified digital wallet application built with Laravel and Vue.js. It allows users to transfer funds to each other in real-time, with a focus on scalability, data integrity, and code quality, designed to simulate a high-traffic financial system.
 
-## Features
+Features
+--------
 
--   **User Authentication**: Secure login and registration powered by Laravel Breeze.
--   **Fund Transfers**: Users can send money to each other using their email addresses.
--   **Real-Time Updates**: Balances and transaction histories are updated instantly across all logged-in devices using Laravel Echo and Pusher, without needing a page refresh.
--   **Commission System**: A 1.5% commission is automatically charged to the sender on every successful transfer.
--   **Scalable Balance Management**: User balances are stored directly on the `users` table, ensuring fast lookups even with millions of transactions.
--   **High Concurrency & Data Integrity**: The transfer process uses pessimistic locking and database transactions to prevent race conditions and ensure that all operations are atomic.
--   **Detailed Transaction History**: A paginated list of all incoming and outgoing transactions for the authenticated user.
--   **Robust Validation**: Comprehensive backend validation to prevent invalid operations like self-transfers, insufficient funds, or sending to non-existent users.
--   **Modern Frontend**: A clean user interface built with Vue.js (Composition API), TypeScript, and Tailwind CSS.
--   **Internationalization (i18n)**: Frontend text is managed via `vue-i18n` for easy translation.
+*   **User Authentication**: Secure login and registration powered by Laravel Breeze.
+*   **Fund Transfers**: Users can send money to each other using their email addresses.
+*   **Real-Time Updates**: Balances and transaction histories are updated instantly across all logged-in devices using Laravel Echo and Pusher, without needing a page refresh.
+*   **Commission System**: A 1.5% commission is automatically charged to the sender on every successful transfer.
+*   **Scalable Balance Management**: User balances are stored directly on the `users` table, ensuring fast lookups even with millions of transactions.
+*   **High Concurrency & Data Integrity**: The transfer process uses pessimistic locking and database transactions to prevent race conditions and ensure that all operations are atomic.
+*   **Detailed Transaction History**: A paginated list of all incoming and outgoing transactions for the authenticated user.
+*   **Robust Validation**: Comprehensive backend validation to prevent invalid operations like self-transfers, insufficient funds, or sending to non-existent users.
+*   **Modern Frontend**: A clean user interface built with Vue.js (Composition API), TypeScript, and Tailwind CSS.
+*   **Internationalization (i18n)**: Frontend text is managed via `vue-i18n` for easy translation.
 
-## Technology Stack
+Technology Stack
+----------------
 
--   **Backend**: Laravel 12
--   **Frontend**: Vue.js 3 (with Composition API), Inertia.js, TypeScript
--   **Database**: MySQL or PostgreSQL
--   **Real-time Broadcasting**: Pusher
--   **Queue Management**: Laravel Queues (Database Driver)
--   **Styling**: Tailwind CSS
--   **Icons**: Heroicons
--   **Testing**:
-    -   Backend: Pest
-    -   Frontend: Vitest, Vue Test Utils
--   **Code Quality**:
-    -   Backend: Laravel Pint (PSR-12)
-    -   Frontend: ESLint, Prettier
+*   **Backend**: Laravel 12
+*   **Frontend**: Vue.js 3 (with Composition API), Inertia.js, TypeScript
+*   **Database**: MySQL or PostgreSQL
+*   **Real-time Broadcasting**: Pusher
+*   **Queue Management**: Laravel Queues (Database Driver)
+*   **Styling**: Tailwind CSS
+*   **Icons**: Heroicons
+*   **Testing**:
+    *   Backend: Pest
+    *   Frontend: Vitest, Vue Test Utils
+*   **Code Quality**:
+    *   Backend: Laravel Pint (PSR-12)
+    *   Frontend: ESLint, Prettier
 
-## Prerequisites
+Prerequisites
+-------------
 
 Before you begin, ensure you have the following installed on your local machine:
--   PHP >= 8.2
--   Composer
--   Node.js & npm
--   A database server (MySQL or PostgreSQL)
 
-## Setup and Installation
+*   PHP >= 8.2
+*   Composer
+*   Node.js & npm
+*   A database server (MySQL or PostgreSQL)
 
-Follow these steps to get the project up and running on your local machine.
+Setup and Installation
+----------------------
 
-**1. Clone the Repository**
-```bash
-git clone <your-repository-url>
-cd wallet
-```
+### 1\. Clone the Repository
 
-**2. Install Dependencies**
-Install both PHP and Node.js dependencies.
-```bash
-composer install
-npm install
-```
+    git clone <your-repository-url>
+    cd wallet
+    
 
-**3. Configure Environment**
-Copy the example environment file and generate your application key.
-```bash
-cp .env.example .env
-php artisan key:generate
-```
+### 2\. Install Dependencies
 
-**4. Update `.env` File**
-Open the `.env` file and configure the following variables:
+    composer install
+    npm install
+    
 
--   **Database Connection:**
-    ```dotenv
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=wallet
-    DB_USERNAME=root
-    DB_PASSWORD=
-    ```
+### 3\. Configure Environment
 
--   **Broadcasting with Pusher:**
-    Add your Pusher application credentials.
-    ```dotenv
-    BROADCAST_CONNECTION=pusher
-    PUSHER_APP_ID=your_pusher_app_id
-    PUSHER_APP_KEY=your_pusher_app_key
-    PUSHER_APP_SECRET=your_pusher_secret
-    PUSHER_APP_CLUSTER=your_pusher_cluster
-    ```
+    cp .env.example .env
+    php artisan key:generate
+    
 
--   **Queue & Session Drivers:**
-    Ensure these are set to use the database for reliability.
-    ```dotenv
-    QUEUE_CONNECTION=database
-    SESSION_DRIVER=database
-    ```
+### 4\. Update `.env` File
 
--   **Dusk Testing Environment (Optional):**
-    If you plan to run browser tests, create a local Dusk environment file. This will use a separate test database (`wallet_test` by default).
-    ```bash
-    cp .env.dusk.local.example .env.dusk.local
-    ```
-    Make sure to create the database specified in `.env.dusk.local` (e.g., `wallet_test`).
+Configure database, broadcasting, queue, and session drivers. For Dusk testing:
 
+#### Dusk Testing Environment (Optional)
 
-**5. Run Database Migrations and Seed**
-This will create all necessary tables and populate the database with a central commission account and 100 sample users.
-```bash
-php artisan migrate:fresh --seed
-```
-> **Note:** The default password for all seeded users is `password`. You can log in with `user_a@email.com` and `user_b@email.com` to test transfers.
+1.  Create a Dusk environment file:
+    
+        cp .env.dusk.local.example .env.dusk.local
+    
+2.  Install a browser driver:
+    *   **Google Chrome (Recommended)**:
+        
+            php artisan dusk:chrome-driver --detect
+        
+        This downloads the correct ChromeDriver binary into `vendor/laravel/dusk/bin`.
+        
+        > **macOS Users:** If you see a `Failed to connect to localhost port 9515` error, start ChromeDriver manually in a separate terminal:
+        > 
+        >     vendor/laravel/dusk/bin/chromedriver-mac --port=9515
+        > 
+        > Keep this process running while you execute:
+        > 
+        >     php artisan dusk
+        > 
+        > If macOS blocks the binary, approve it with:
+        > 
+        >     xattr -d com.apple.quarantine ./vendor/laravel/dusk/bin/chromedriver-mac
+        
+    *   **Safari (macOS only)**: Enable remote automation in Safari preferences, then run this in separate terminal to start driver session:
+        
+            safaridriver -p 4444
 
-**6. Build Frontend Assets**
-Compile the frontend assets for production.
-```bash
-npm run build
-```
+        then run this to start tests:
 
-## Running the Application
+            php artisan dusk
+        
 
-To run the application, you need to start the web server, the Vite development server, and the queue worker.
+### 5\. Run Database Migrations and Seed
 
-**1. Recommended Method (Concurrent)**
+    php artisan migrate:fresh --seed
+    
 
-A convenient script is included in `composer.json` to run all necessary services at once.
-```bash
-composer run dev
-```
-This command will start:
--   The Laravel development server (`php artisan serve`)
--   The queue worker (`php artisan queue:listen`)
--   The Laravel Pail log viewer (`php artisan pail`)
--   The Vite development server (`npm run dev`)
+### 6\. Build Frontend Assets
 
-**Manual Method**
+    npm run build
+    
 
-Alternatively, you can run each service in a separate terminal window:
-```bash
-# Terminal 1: Laravel Server
-php artisan serve
+Running the Application
+-----------------------
 
-# Terminal 2: Vite Server
-npm run dev
+Use `composer run dev` to start Laravel, queue worker, log viewer, and Vite server concurrently. Or run each manually in separate terminals.
 
-# Terminal 3: Queue Worker (MANDATORY for real-time events)
-php artisan queue:work
-```
+Running Tests
+-------------
 
-Once the servers are running, you can access the application at `http://127.0.0.1:8000`.
+*   **Backend Tests (Pest)**:
+    
+        composer test
+    
+*   **Frontend Unit & Feature Tests (Vitest)**:
+    
+        npm run test:unit
+    
+*   **Browser Tests (Laravel Dusk)**:
+    
+        php artisan dusk
+    
+    Ensure ChromeDriver is running (see instructions above).
+    
 
-## Running Tests
+Code Quality Tools
+------------------
 
-The application has a comprehensive test suite for both the backend and frontend.
-
-**Backend Tests (Pest)**
-```bash
-composer test
-```
-
-**Frontend Unit & Feature Tests (Vitest)**
-```bash
-npm run test:unit
-```
-
-## Code Quality Tools
-
-To maintain code consistency, you can use the built-in formatting and linting tools.
-
-**Backend Formatting (Laravel Pint)**
-```bash
-./vendor/bin/pint
-```
-
-**Frontend Formatting (Prettier)**
-```bash
-npm run format
-```
-
-**Frontend Linting (ESLint)**
-```bash
-npm run lint
-```
+*   **Backend Formatting (Laravel Pint)**:
+    
+        ./vendor/bin/pint
+    
+*   **Frontend Formatting (Prettier)**:
+    
+        npm run format
+    
+*   **Frontend Linting (ESLint)**:
+    
+        npm run lint

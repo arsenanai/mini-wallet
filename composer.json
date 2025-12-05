@@ -60,6 +60,12 @@
             "@php artisan config:clear --ansi",
             "@php artisan test"
         ],
+        "test:dusk": [
+            "@php artisan dusk:chrome-driver 143.0.7499.41",
+            "vendor/laravel/dusk/bin/chrome-driver > /dev/null 2>&1 &",
+            "sleep 1",
+            "php artisan dusk; EXIT_CODE=$?; pkill -f 'chrome-driver'; exit $EXIT_CODE"
+        ],
         "analyse": [
             "@php artisan config:clear --ansi",
             "./vendor/bin/phpstan analyse --memory-limit=512M"

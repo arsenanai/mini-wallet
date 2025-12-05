@@ -1,10 +1,11 @@
 <?php
 
-use Tests\TestCase;
-
 uses(
     Tests\DuskTestCase::class,
-)->in('Browser', 'Dusk');
+    // Illuminate\Foundation\Testing\DatabaseMigrations::class,
+)->in('Browser');
+
+use Tests\TestCase;
 
 /*
 |--------------------------------------------------------------------------

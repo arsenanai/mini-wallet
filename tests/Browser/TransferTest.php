@@ -80,7 +80,8 @@ test('a user sees an error when trying to send with insufficient funds', functio
             ->waitFor('#email')
             ->type('#email', $sender->email)
             ->type('#password', 'password')
-            ->press('Log in')
+            ->waitFor('@login-button')
+            ->press('@login-button')
             ->waitForLocation('/dashboard')
             ->assertSeeIn('@balance-amount', '$100.00')
             ->type('#receiver_email', $receiver->email)
@@ -101,7 +102,8 @@ test('a user sees validation errors for invalid inputs', function () {
             ->waitFor('#email')
             ->type('#email', $sender->email)
             ->type('#password', 'password')
-            ->press('Log in')
+            ->waitFor('@login-button')
+            ->press('@login-button')
             ->waitForLocation('/dashboard')
             ->assertSeeIn('@balance-amount', '$500.00');
 
